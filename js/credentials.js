@@ -7,15 +7,15 @@ export async function saveCredential(name, site, username, password) {
     const masterPassword = getMasterPassword();
     if (!masterPassword) throw new Error('Authentication required');
 
-    const { data: user } = await supabase.auth.getUser();
-    if (!user) throw new Error('User not authenticated');
+    const { data: { user }, error: userError } = await supabase.auth.getUser();
+    if (userError || !user) throw new Error('User not authenticated');
 
     const key = await getKeyFromPassword(masterPassword);
     const encryptedPassword = await encryptData(key, password);
 
     const { data, error } = await supabase.from('credentials')
       .insert({
-        user_id: user.user.id,
+        user_id: user.id,
         name,
         site_name: site,
         account_name: username,
@@ -36,39 +36,34 @@ export async function loadCredentials() {
     const masterPassword = getMasterPassword();
     if (!masterPassword) throw new Error('Authentication required');
 
-    const { data: user } = await supabase.auth.getUser();
-    if (!user) throw new Error('User not authenticated');
+    const { data: { user }, error: userError } = await supabase.auth.getUser();
+    if (userError || !user) throw new Error('User not authenticated');
 
     const { data, error } = await supabase.from('credentials')
       .select('*')
-      .eq('user_id', user.user.id)
+      .eq('user_id', user.id)
       .order('created_at', { ascending: false });
 
     if (error) throw error;
     if (!data || data.length === 0) return [];
 
     const key = await getKeyFromPassword(masterPassword);
-    const results = [];
-
-    for (const cred of data) {
+    return await Promise.all(data.map(async cred => {
       try {
         const decrypted = await decryptData(key, cred.password);
-        results.push({
+        return {
           ...cred,
           password_decrypted: decrypted,
           account_username: cred.account_name
-        });
-      } catch (decryptError) {
-        console.error(`Decryption failed for credential ${cred.id}:`, decryptError);
-        results.push({
+        };
+      } catch (e) {
+        return {
           ...cred,
           password_decrypted: null,
           account_username: cred.account_name
-        });
+        };
       }
-    }
-
-    return results;
+    }));
   } catch (error) {
     console.error('Load credentials error:', error);
     throw error;

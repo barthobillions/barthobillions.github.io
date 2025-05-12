@@ -28,8 +28,8 @@ export function createCredentialElement(credential) {
       <span class="username">${credential.account_username || 'No username'}</span>
       <div class="password-container">
         <span class="password-display">${'*'.repeat(10)}</span>
-        <button class="toggle-password" data-id="${credential.id}">Show</button>
-        <button class="delete-credential" data-id="${credential.id}">Delete</button>
+        <button class="toggle-password btn-small" data-id="${credential.id}">Show</button>
+        <button class="delete-credential btn-small danger" data-id="${credential.id}">Delete</button>
       </div>
     </div>
   `;
