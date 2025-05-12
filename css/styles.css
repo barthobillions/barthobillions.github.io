@@ -1,7 +1,8 @@
 /* Global styles */
 body {
   font-family: Arial, sans-serif;
-  background-color: #f4f4f4; /* Light gray background for the body */
+  background-color: #f8f8f8; /* Light gray background */
+  color: #333; /* Dark gray text for good readability */
   margin: 0;
   padding: 0;
 }
@@ -11,17 +12,17 @@ main {
   max-width: 500px;
   margin: 50px auto;
   padding: 20px;
-  background-color: #fff;
+  background-color: #ffffff; /* White background for content */
   border-radius: 5px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
 }
 
 header {
   text-align: center;
   font-size: 24px;
   padding: 20px;
-  background-color: #d3d3d3; /* Light gray */
-  color: black;
+  background-color: #f4f4f4; /* Soft blue for the header */
+  color: white;
 }
 
 h1,
@@ -39,6 +40,7 @@ form {
 
 label {
   font-weight: bold;
+  color: #555; /* Lighter gray for labels */
 }
 
 input[type="email"],
@@ -46,20 +48,21 @@ input[type="password"],
 input[type="text"] {
   padding: 10px;
   font-size: 16px;
-  border: 1px solid #ccc;
+  border: 1px solid #ddd; /* Light gray border */
   border-radius: 5px;
+  background-color: #f1f1f1; /* Soft light gray background */
 }
 
 input:focus {
-  border-color: #d3d3d3; /* Light gray for focused input fields */
+  border-color: #4e9fd1; /* Blue border on focus */
   outline: none;
 }
 
 .button-primary,
 .primary-btn {
   padding: 10px;
-  background-color: #d3d3d3; /* Light gray */
-  color: black; /* Dark text for contrast */
+  background-color: #4e9fd1; /* Soft blue for primary buttons */
+  color: #fff;
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -68,7 +71,7 @@ input:focus {
 
 .button-primary:hover,
 .primary-btn:hover {
-  background-color: #b0b0b0; /* Slightly darker gray for hover effect */
+  background-color: #3578a3; /* Slightly darker blue on hover */
 }
 
 .auth-link {
@@ -77,7 +80,7 @@ input:focus {
 }
 
 .auth-link a {
-  color: #d3d3d3; /* Light gray text */
+  color: #4e9fd1; /* Soft blue for links */
   text-decoration: none;
 }
 
@@ -87,10 +90,11 @@ input:focus {
 
 /* Credential List */
 .credential-item {
-  border: 1px solid #ccc;
+  border: 1px solid #ddd; /* Light gray border */
   padding: 10px;
   margin-bottom: 10px;
   border-radius: 5px;
+  background-color: #f9f9f9; /* Slightly off-white background */
 }
 
 .credential-header {
@@ -114,8 +118,8 @@ input:focus {
 }
 
 button.toggle-password {
-  background-color: #d3d3d3; /* Light gray */
-  color: black;
+  background-color: #6fcf97; /* Soft green for show password button */
+  color: white;
   border: none;
   padding: 5px 10px;
   cursor: pointer;
@@ -124,12 +128,12 @@ button.toggle-password {
 }
 
 button.toggle-password:hover {
-  background-color: #b0b0b0; /* Slightly darker gray for hover effect */
+  background-color: #55c085; /* Darker green on hover */
 }
 
 button.delete-credential {
-  background-color: #d3d3d3; /* Light gray */
-  color: black;
+  background-color: #ff6b6b; /* Soft red for delete button */
+  color: white;
   border: none;
   padding: 5px 10px;
   cursor: pointer;
@@ -138,7 +142,7 @@ button.delete-credential {
 }
 
 button.delete-credential:hover {
-  background-color: #b0b0b0; /* Slightly darker gray for hover effect */
+  background-color: #e94e4e; /* Darker red on hover */
 }
 
 /* Add Credential Form */
@@ -156,7 +160,7 @@ button.delete-credential:hover {
 /* Empty state */
 .empty-state {
   text-align: center;
-  color: #777;
+  color: #888; /* Lighter gray for empty states */
 }
 
 /* Modal */
@@ -167,7 +171,7 @@ button.delete-credential:hover {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.3); /* Semi-transparent background */
   justify-content: center;
   align-items: center;
 }
@@ -187,13 +191,13 @@ button.delete-credential:hover {
 .logout-btn {
   margin-top: 10px;
   padding: 8px 12px;
-  background-color: #d3d3d3; /* Light gray */
-  color: black;
+  background-color: #ff6b6b; /* Soft red for logout button */
+  color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
 }
 
 .logout-btn:hover {
-  background-color: #b0b0b0; /* Slightly darker gray for hover effect */
+  background-color: #e94e4e; /* Darker red on hover */
 }
