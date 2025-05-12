@@ -9,35 +9,30 @@
 <body>
   <div id="app">
     <header>
-      <h1 style="color: black; font-weight: bold; margin: 0;">NatPass</h1>
+      <h1>NatPass</h1>
+      <button id="logout-btn" class="primary-btn">Logout</button>
     </header>
 
-    <main>
-      <button id="add-credential-btn" class="primary-btn">Add New Credential</button>
+    <button id="add-credential-btn" class="primary-btn">Add New Credential</button>
 
-      <div class="credential-item hidden" id="form-wrapper">
-        <div id="add-credential-form" class="form-group">
-          <input type="text" id="cred-name" placeholder="Credential Name" required />
-          <input type="text" id="cred-site" placeholder="Site Name" required />
-          <input type="text" id="cred-username" placeholder="Username" required />
-          <div class="password-container">
-            <input type="password" id="cred-password" placeholder="Password" required />
-            <button type="button" id="toggle-password">Show</button>
-          </div>
-          <div class="password-container">
-            <input type="password" id="cred-password-confirm" placeholder="Confirm Password" required />
-          </div>
-          <button id="save-credential" class="primary-btn">Save Credential</button>
+    <!-- Wrapped form inside a credential-item for consistent styling -->
+    <div class="credential-item hidden" id="form-wrapper">
+      <div id="add-credential-form" class="form-group">
+        <input type="text" id="cred-name" placeholder="Credential Name" required />
+        <input type="text" id="cred-site" placeholder="Site Name" required />
+        <input type="text" id="cred-username" placeholder="Username" required />
+        <div class="password-container">
+          <input type="password" id="cred-password" placeholder="Password" required />
+          <button type="button" id="toggle-password">Show</button>
         </div>
+        <div class="password-container">
+          <input type="password" id="cred-password-confirm" placeholder="Confirm Password" required />
+        </div>
+        <button id="save-credential" class="primary-btn">Save Credential</button>
       </div>
+    </div>
 
-      <div id="credentials-container"></div>
-
-      <!-- Logout button at the bottom -->
-      <div style="margin-top: 30px; text-align: center;">
-        <button id="logout-btn" class="logout-btn">Logout</button>
-      </div>
-    </main>
+    <div id="credentials-container"></div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
@@ -54,7 +49,7 @@
     const credentialsContainer = document.getElementById('credentials-container');
     const logoutBtn = document.getElementById('logout-btn');
 
-    // Toggle password visibility in the form
+    // Show/Hide password for the new credential
     togglePasswordBtn.addEventListener('click', () => {
       const passwordInput = document.getElementById('cred-password');
       if (passwordInput.type === 'password') {
@@ -70,18 +65,16 @@
     logoutBtn.addEventListener('click', async () => {
       try {
         await supabase.auth.signOut();
-        window.location.href = "/natpass/index.html";
+        window.location.href = "/natpass/index.html";  // Redirect to login page
       } catch (error) {
         alert(error.message);
       }
     });
 
-    // Toggle credential form
     addCredentialBtn.addEventListener('click', () => {
       formWrapper.classList.toggle('hidden');
     });
 
-    // Save credential
     saveCredentialBtn.addEventListener('click', async () => {
       const name = document.getElementById('cred-name').value;
       const site = document.getElementById('cred-site').value;
@@ -140,7 +133,7 @@
       });
 
       document.querySelectorAll('.toggle-password').forEach(button => {
-        button.addEventListener('click', (e) => {
+        button.addEventListener('click', async (e) => {
           const id = e.target.dataset.id;
           const passwordSpan = document.getElementById(`password-${id}`);
           const credential = credentials.find(c => c.id == id);
@@ -167,6 +160,7 @@
       });
     }
 
+    // Initial load
     loadAndRenderCredentials();
   </script>
 </body>
