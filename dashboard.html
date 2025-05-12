@@ -28,17 +28,23 @@
         <button type="submit" class="primary-btn">Save Credential</button>
       </form>
 
-      <button id="logout-btn" class="button-primary" style="margin-top: 20px;">Logout</button>
+      <button id="logout-btn" class="primary-btn" style="margin-top: 20px;">Logout</button>
     </div>
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
   <script type="module">
-    import { getUserCredentials, addCredential, deleteCredential, logout } from '/natpass/js/dashboard.js';
+    import { supabase } from '/natpass/js/supabase.js';
+    import { getUserCredentials, addCredential, deleteCredential } from '/natpass/js/dashboard.js';
 
     const credentialList = document.getElementById("credential-list");
     const form = document.getElementById("add-credential-form");
     const logoutBtn = document.getElementById("logout-btn");
+
+    async function logout() {
+      await supabase.auth.signOut();
+      window.location.href = "/natpass/index.html";
+    }
 
     async function renderCredentials() {
       credentialList.innerHTML = "";
@@ -101,10 +107,7 @@
       renderCredentials();
     });
 
-    logoutBtn.addEventListener("click", async () => {
-      await logout();
-      window.location.href = "/natpass/index.html";
-    });
+    logoutBtn.addEventListener("click", logout);
 
     renderCredentials();
   </script>
