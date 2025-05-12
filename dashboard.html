@@ -112,14 +112,10 @@
                     return;
                 }
                 
-                try {
-                    await saveCredential(name, site, username, password);
-                    document.getElementById('add-credential-form').reset();
-                    toggleElement('add-credential-form', 'toggle-add-credential');
-                    await loadAndRenderCredentials();
-                } catch (error) {
-                    alert('Failed to save credential');
-                }
+                await saveCredential(name, site, username, password);
+                document.getElementById('add-credential-form').reset();
+                toggleElement('add-credential-form', 'toggle-add-credential');
+                await loadAndRenderCredentials();
             });
             
             // Logout
