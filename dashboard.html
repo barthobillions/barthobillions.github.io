@@ -8,7 +8,11 @@
 </head>
 <body>
   <div id="app">
-    <h1>Your Credentials</h1>
+    <header>
+      <h1>Your Credentials</h1>
+      <button id="logout-btn" class="primary-btn">Logout</button>
+    </header>
+
     <button id="add-credential-btn" class="primary-btn">Add New Credential</button>
 
     <!-- Wrapped form inside a credential-item for consistent styling -->
@@ -17,7 +21,13 @@
         <input type="text" id="cred-name" placeholder="Credential Name" required />
         <input type="text" id="cred-site" placeholder="Site Name" required />
         <input type="text" id="cred-username" placeholder="Username" required />
-        <input type="password" id="cred-password" placeholder="Password" required />
+        <div class="password-container">
+          <input type="password" id="cred-password" placeholder="Password" required />
+          <button type="button" id="toggle-password">Show</button>
+        </div>
+        <div class="password-container">
+          <input type="password" id="cred-password-confirm" placeholder="Confirm Password" required />
+        </div>
         <button id="save-credential" class="primary-btn">Save Credential</button>
       </div>
     </div>
@@ -35,7 +45,31 @@
     const addCredentialBtn = document.getElementById('add-credential-btn');
     const formWrapper = document.getElementById('form-wrapper');
     const saveCredentialBtn = document.getElementById('save-credential');
+    const togglePasswordBtn = document.getElementById('toggle-password');
     const credentialsContainer = document.getElementById('credentials-container');
+    const logoutBtn = document.getElementById('logout-btn');
+
+    // Show/Hide password for the new credential
+    togglePasswordBtn.addEventListener('click', () => {
+      const passwordInput = document.getElementById('cred-password');
+      if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        togglePasswordBtn.textContent = 'Hide';
+      } else {
+        passwordInput.type = 'password';
+        togglePasswordBtn.textContent = 'Show';
+      }
+    });
+
+    // Logout functionality
+    logoutBtn.addEventListener('click', async () => {
+      try {
+        await supabase.auth.signOut();
+        window.location.href = "/natpass/index.html";  // Redirect to login page
+      } catch (error) {
+        alert(error.message);
+      }
+    });
 
     addCredentialBtn.addEventListener('click', () => {
       formWrapper.classList.toggle('hidden');
@@ -46,6 +80,12 @@
       const site = document.getElementById('cred-site').value;
       const username = document.getElementById('cred-username').value;
       const password = document.getElementById('cred-password').value;
+      const confirmPassword = document.getElementById('cred-password-confirm').value;
+
+      if (password !== confirmPassword) {
+        alert('Passwords do not match!');
+        return;
+      }
 
       try {
         await saveCredential(name, site, username, password);
