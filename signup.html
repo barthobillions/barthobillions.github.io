@@ -3,38 +3,86 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Create Account</title>
-  <link rel="stylesheet" href="styles.css" />
+  <title>Create Account - Password Manager</title>
+  <!-- Link to the centralized stylesheet -->
+  <link rel="stylesheet" href="/css/styles.css" />
 </head>
 <body>
   <div id="app">
     <h1>Create Account</h1>
-
-    <input type="email" id="signup-email" placeholder="Email" />
-    <input type="password" id="signup-password" placeholder="Password" />
-    <button id="signup">Sign Up</button>
-
-    <p>Already have an account? <a href="index.html">Log in</a></p>
+    
+    <!-- Signup Form -->
+    <div class="form-group">
+      <input 
+        type="email" 
+        id="signup-email" 
+        placeholder="Email" 
+        required
+      />
+      <input 
+        type="password" 
+        id="signup-password" 
+        placeholder="Password" 
+        required
+      />
+      <input 
+        type="password" 
+        id="confirm-password" 
+        placeholder="Confirm Password" 
+        required
+      />
+      <button id="signup" class="primary-btn">Sign Up</button>
+    </div>
+    
+    <!-- Login link -->
+    <p class="auth-link">
+      Already have an account? <a href="/index.html">Log in</a>
+    </p>
   </div>
 
+  <!-- Load Supabase client library -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-  <script>
-    const supabase = window.supabase.createClient(
-      'https://xyjyhwojxrqugnlbqmoz.supabase.co',
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5anlod29qeHJxdWdubGJxbW96Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDcwMDI3NTYsImV4cCI6MjA2MjU3ODc1Nn0.AxKNG5LS3zRLEpwBBdJFENnrP_Gu7bb3BZg-99aRl5I'
-    );
+  
+  <!-- Modular JavaScript -->
+  <script type="module">
+    // Import the signup function from our auth module
+    import { signup } from '/js/auth.js';
 
-    document.getElementById("signup").addEventListener("click", async () => {
-      const email = document.getElementById("signup-email").value;
-      const password = document.getElementById("signup-password").value;
+    // Get DOM elements
+    const signupBtn = document.getElementById("signup");
+    const emailInput = document.getElementById("signup-email");
+    const passwordInput = document.getElementById("signup-password");
+    const confirmPasswordInput = document.getElementById("confirm-password");
 
-      const { error } = await supabase.auth.signUp({ email, password });
+    // Signup button click handler
+    signupBtn.addEventListener("click", async () => {
+      // Get form values
+      const email = emailInput.value;
+      const password = passwordInput.value;
+      const confirmPassword = confirmPasswordInput.value;
 
-      if (error) {
+      // Basic validation
+      if (!email || !password || !confirmPassword) {
+        alert("Please fill in all fields.");
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        alert("Passwords do not match.");
+        return;
+      }
+
+      try {
+        // Call the signup function from auth.js
+        await signup(email, password);
+        
+        // Success message and redirect
+        alert("Account created! Please check your email to confirm your account, then log in.");
+        window.location.href = "/index.html";
+      } catch (error) {
+        // Display error message to user
         alert("Sign-up failed: " + error.message);
-      } else {
-        alert("Account created! Check your email to confirm, then log in.");
-        window.location.href = "index.html";
+        console.error("Signup error:", error);
       }
     });
   </script>
