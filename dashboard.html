@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dashboard</title>
+  <style>
+    /* General Styles */
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f5f5f5;
+      color: #333;
+      margin: 0;
+      padding: 0;
+    }
+
+    #app {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #fff;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+      margin-top: 20px;
+    }
+
+    h1, h2 {
+      color: #2c3e50;
+    }
+
+    input[type="text"], input[type="password"] {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      box-sizing: border-box;
+    }
+
+    button {
+      background-color: #3498db;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      margin: 10px 0;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #2980b9;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    /* Credential Group Styles */
+    .credential-group {
+      margin-bottom: 20px;
+      padding: 15px;
+      background-color: #f9f9f9;
+      border-radius: 5px;
+    }
+
+    .credential-group h3 {
+      margin-top: 0;
+      color: #2c3e50;
+    }
+
+    .credential-item {
+      margin-bottom: 10px;
+      padding: 10px;
+      background-color: #fff;
+      border-radius: 5px;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .credential-item p {
+      margin: 0;
+    }
+
+    .password-hidden {
+      display: inline-block;
+      width: 200px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: #7f8c8d;
+    }
+
+    .show-password, .delete-credential {
+      background-color: #e74c3c;
+      margin-left: 10px;
+    }
+
+    .show-password:hover, .delete-credential:hover {
+      background-color: #c0392b;
+    }
+
+    /* Login Screen Styles */
+    #not-logged-in {
+      text-align: center;
+      margin-top: 50px;
+    }
+
+    #not-logged-in a {
+      color: #3498db;
+      text-decoration: none;
+    }
+
+    #not-logged-in a:hover {
+      text-decoration: underline;
+    }
+
+    /* Dropdown Styles */
+    .dropdown {
+      margin-top: 20px;
+    }
+
+    .dropdown-button {
+      background-color: #3498db;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .dropdown-button:hover {
+      background-color: #2980b9;
+    }
+
+    .dropdown-content {
+      display: none;
+      margin-top: 10px;
+      padding: 15px;
+      background-color: #f9f9f9;
+      border-radius: 5px;
+    }
+
+    .dropdown-content.show {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <h1>NatPass Vault</h1>
+
+    <div id="dashboard" class="hidden">
+      <div class="dropdown">
+        <button class="dropdown-button" id="toggle-add-credential">Add Credential</button>
+        <div class="dropdown-content" id="add-credential">
+          <input type="text" id="site-name" placeholder="Site" />
+          <input type="text" id="account-name" placeholder="Username or Email" />
+          <input type="password" id="site-password" placeholder="Password" />
+          <input type="checkbox" id="show-password"> Show Password
+          <input type="password" id="confirm-password" placeholder="Confirm Password" />
+          <button id="save-password">Save</button>
+        </div>
+      </div>
+
+      <div class="dropdown">
+        <button class="dropdown-button" id="toggle-credentials">Show Saved Credentials</button>
+        <div class="dropdown-content" id="password-list"></div>
+      </div>
+
+      <button id="logout">Log Out</button>
+    </div>
+
+    <p id="not-logged-in" class="hidden">You are not logged in. <a href="index.html">Log in</a>.</p>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script>
+    const supabase = window.supabase.createClient(
+      'https://xyjyhwojxrqugnlbqmoz.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5anlod29qeHJxdWdubGJxbW96Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDcwMDI3NTYsImV4cCI6MjA2MjU3ODc1Nn0.AxKNG5LS3zRLEpwBBdJFENnrP_Gu7bb3BZg-99aRl5I'
+    );
+
+    let currentUser = null;
+    let masterPassword = null;
+
+    async function getKeyFromPassword(password) {
+      const enc = new TextEncoder();
+      const keyMaterial = await window.crypto.subtle.importKey('raw', enc.encode(password), 'PBKDF2', false, ['deriveKey']);
+      return crypto.subtle.deriveKey({
+        name: 'PBKDF2',
+        salt: enc.encode('static-salt'), // Use a consistent salt
+        iterations: 100000,
+        hash: 'SHA-256'
+      }, keyMaterial, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']);
+    }
+
+    async function encryptData(key, data) {
+      const enc = new TextEncoder();
+      const iv = crypto.getRandomValues(new Uint8Array(12));
+      const ciphertext = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, enc.encode(data));
+      const combined = new Uint8Array([...iv, ...new Uint8Array(ciphertext)]);
+      return btoa(String.fromCharCode(...combined));
+    }
+
+    async function decryptData(key, encryptedData) {
+      const combined = new Uint8Array(atob(encryptedData).split('').map(c => c.charCodeAt(0)));
+      const iv = combined.slice(0, 12);
+      const ciphertext = combined.slice(12);
+      const decrypted = await crypto.subtle.decrypt(
+        { name: 'AES-GCM', iv },
+        key,
+        ciphertext
+      );
+      return new TextDecoder().decode(decrypted);
+    }
+
+    async function loadUser() {
+      const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+      console.log("Session:", sessionData);
+
+      const { data, error } = await supabase.auth.getUser();
+      console.log("User check:", data, error);
+
+      if (error || !data.user) {
+        document.getElementById("not-logged-in").classList.remove("hidden");
+        return;
+      }
+
+      currentUser = data.user;
+      document.getElementById("dashboard").classList.remove("hidden");
+
+      // Use the user's login password as the master password
+      masterPassword = sessionData.session.access_token; // Use the access token as a proxy for the password
+
+      await loadCredentials();
+    }
+
+    async function loadCredentials() {
+      const { data, error } = await supabase
+        .from('credentials')
+        .select('*')
+        .eq('user_id', currentUser.id)
+        .order('site_name');
+
+      if (error) {
+        console.error("Error loading credentials:", error.message);
+        return;
+      }
+
+      console.log("Loaded credentials:", data);
+      const list = document.getElementById("password-list");
+      list.innerHTML = '';
+
+      try {
+        const key = await getKeyFromPassword(masterPassword);
+
+        const grouped = {};
+        data.forEach(entry => {
+          if (!grouped[entry.site_name]) grouped[entry.site_name] = [];
+          grouped[entry.site_name].push(entry);
+        });
+
+        for (const site in grouped) {
+          const siteDiv = document.createElement("div");
+          siteDiv.className = "credential-group";
+          siteDiv.innerHTML = `<h3>${site}</h3>`;
+
+          grouped[site].forEach(entry => {
+            const itemDiv = document.createElement("div");
+            itemDiv.className = "credential-item";
+            itemDiv.innerHTML = `
+              <p>${entry.account_name}: <span class="password-hidden">${'*'.repeat(10)}</span>
+              <button class="show-password" data-id="${entry.id}">Show</button>
+              <button class="delete-credential" data-id="${entry.id}">Delete</button></p>
+            `;
+            siteDiv.appendChild(itemDiv);
+          });
+
+          list.appendChild(siteDiv);
+        }
+
+        // Add event listeners for show password buttons
+        document.querySelectorAll('.show-password').forEach(button => {
+          button.addEventListener('click', async function() {
+            const id = this.getAttribute('data-id');
+            const entry = data.find(entry => entry.id == id);
+            const key = await getKeyFromPassword(masterPassword);
+            const decrypted = await decryptData(key, entry.password);
+            const passwordSpan = this.previousElementSibling;
+            passwordSpan.textContent = decrypted;
+            this.textContent = 'Hide';
+            this.onclick = function() {
+              passwordSpan.textContent = '*'.repeat(10);
+              this.textContent = 'Show';
+              this.onclick = arguments.callee.caller;
+            };
+          });
+        });
+
+        // Add event listeners for delete buttons
+        document.querySelectorAll('.delete-credential').forEach(button => {
+          button.addEventListener('click', async function() {
+            const id = this.getAttribute('data-id');
+            const { error } = await supabase.from('credentials').delete().eq('id', id);
+            if (error) {
+              console.error("Error deleting credential:", error.message);
+              alert("Error deleting credential. Please try again.");
+              return;
+            }
+            await loadCredentials();
+          });
+        });
+
+      } catch (error) {
+        console.error("Error decrypting credentials:", error);
+        alert("An error occurred while decrypting the credentials. Please try again.");
+      }
+    }
+
+    document.getElementById("show-password").addEventListener("change", function() {
+      const passwordInput = document.getElementById("site-password");
+      passwordInput.type = this.checked ? "text" : "password";
+    });
+
+    document.getElementById("save-password").addEventListener("click", async () => {
+      const site = document.getElementById("site-name").value;
+      const username = document.getElementById("account-name").value;
+      const password = document.getElementById("site-password").value;
+      const confirmPassword = document.getElementById("confirm-password").value;
+
+      if (!site || !username || !password || !confirmPassword) {
+        alert("Please fill in all fields.");
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        alert("Passwords do not match.");
+        return;
+      }
+
+      try {
+        const key = await getKeyFromPassword(masterPassword);
+        const encrypted = await encryptData(key, password);
+
+        const { data, error } = await supabase.from('credentials').insert({
+          user_id: currentUser.id,
+          site_name: site,
+          account_name: username,
+          password: encrypted
+        });
+
+        if (error) {
+          console.error("Error saving credentials:", error.message);
+          alert("Error saving credentials. Please try again.");
+          return;
+        }
+
+        console.log("Saved credentials:", data);
+        await loadCredentials();
+      } catch (error) {
+        console.error("Error:", error);
+        alert("An error occurred. Please try again.");
+      }
+    });
+
+    document.getElementById("toggle-add-credential").addEventListener("click", function() {
+      const dropdownContent = document.getElementById("add-credential");
+      if (dropdownContent.classList.contains("show")) {
+        dropdownContent.classList.remove("show");
+        this.textContent = "Add Credential";
+      } else {
+        dropdownContent.classList.add("show");
+        this.textContent = "Hide Add Credential";
+      }
+    });
+
+    document.getElementById("toggle-credentials").addEventListener("click", function() {
+      const dropdownContent = document.getElementById("password-list");
+      if (dropdownContent.classList.contains("show")) {
+        dropdownContent.classList.remove("show");
+        this.textContent = "Show Saved Credentials";
+      } else {
+        dropdownContent.classList.add("show");
+        this.textContent = "Hide Saved Credentials";
+      }
+    });
+
+    document.getElementById("logout").addEventListener("click", async () => {
+      await supabase.auth.signOut();
+      window.location.href = 'index.html'; // Redirect to login page
+    });
+
+    loadUser();
+  </script>
+</body>
+</html>

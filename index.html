@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login - Password Manager</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="app">
+    <h1>Login</h1>
+
+    <input type="email" id="login-email" placeholder="Email" />
+    <input type="password" id="login-password" placeholder="Password" />
+    <button id="login">Login</button>
+
+    <p>Don't have an account? <a href="signup.html">Create one</a></p>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script>
+    const supabase = window.supabase.createClient(
+      'https://xyjyhwojxrqugnlbqmoz.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh5anlod29qeHJxdWdubGJxbW96Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDcwMDI3NTYsImV4cCI6MjA2MjU3ODc1Nn0.AxKNG5LS3zRLEpwBBdJFENnrP_Gu7bb3BZg-99aRl5I'
+    );
+
+    document.getElementById("login").addEventListener("click", async () => {
+      const email = document.getElementById("login-email").value;
+      const password = document.getElementById("login-password").value;
+
+      const { error } = await supabase.auth.signInWithPassword({ email, password });
+
+      if (error) {
+        alert("Login failed: " + error.message);
+        return;
+      }
+
+      window.location.href = "dashboard.html";
+    });
+  </script>
+</body>
+</html>
