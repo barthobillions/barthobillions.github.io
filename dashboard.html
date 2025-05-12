@@ -1,127 +1,112 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard - NatPass</title>
-  <link rel="stylesheet" href="/natpass/css/styles.css" />
+  <link rel="stylesheet" href="/natpass/css/styles.css">
 </head>
 <body>
-  <div id="app">
-    <h1>Your Credentials</h1>
-    <button id="add-credential-btn" class="primary-btn">Add New Credential</button>
+  <header>NatPass</header>
 
-    <!-- Wrapped form inside a credential-item for consistent styling -->
-    <div class="credential-item hidden" id="form-wrapper">
-      <div id="add-credential-form" class="form-group">
-        <input type="text" id="cred-name" placeholder="Credential Name" required />
-        <input type="text" id="cred-site" placeholder="Site Name" required />
-        <input type="text" id="cred-username" placeholder="Username" required />
-        <input type="password" id="cred-password" placeholder="Password" required />
-        <button id="save-credential" class="primary-btn">Save Credential</button>
-      </div>
+  <main>
+    <h2>Your Credentials</h2>
+    <div id="app">
+      <div id="credential-list"></div>
+
+      <form id="add-credential-form">
+        <h3>Add New Credential</h3>
+        <label for="site">Site</label>
+        <input type="text" id="site" required placeholder="example.com">
+
+        <label for="username">Username</label>
+        <input type="text" id="username" required placeholder="yourusername">
+
+        <label for="password">Password</label>
+        <input type="password" id="password" required placeholder="••••••••">
+
+        <button type="submit" class="primary-btn">Save Credential</button>
+      </form>
+
+      <button id="logout-btn" class="button-primary" style="margin-top: 20px;">Logout</button>
     </div>
-
-    <div id="credentials-container"></div>
-  </div>
+  </main>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
   <script type="module">
-    import { supabase } from '/natpass/js/supabase.js';
-    import { getKeyFromPassword, encryptData, decryptData } from '/natpass/js/encryption.js';
-    import { getMasterPassword } from '/natpass/js/auth.js';
-    import { saveCredential, loadCredentials, deleteCredential } from '/natpass/js/credentials.js';
+    import { getUserCredentials, addCredential, deleteCredential, logout } from '/natpass/js/dashboard.js';
 
-    const addCredentialBtn = document.getElementById('add-credential-btn');
-    const formWrapper = document.getElementById('form-wrapper');
-    const saveCredentialBtn = document.getElementById('save-credential');
-    const credentialsContainer = document.getElementById('credentials-container');
+    const credentialList = document.getElementById("credential-list");
+    const form = document.getElementById("add-credential-form");
+    const logoutBtn = document.getElementById("logout-btn");
 
-    addCredentialBtn.addEventListener('click', () => {
-      formWrapper.classList.toggle('hidden');
-    });
+    async function renderCredentials() {
+      credentialList.innerHTML = "";
+      const credentials = await getUserCredentials();
 
-    saveCredentialBtn.addEventListener('click', async () => {
-      const name = document.getElementById('cred-name').value;
-      const site = document.getElementById('cred-site').value;
-      const username = document.getElementById('cred-username').value;
-      const password = document.getElementById('cred-password').value;
-
-      try {
-        await saveCredential(name, site, username, password);
-        formWrapper.classList.add('hidden');
-        loadAndRenderCredentials();
-      } catch (error) {
-        alert(error.message);
-      }
-    });
-
-    async function loadAndRenderCredentials() {
-      try {
-        const credentials = await loadCredentials();
-        renderCredentials(credentials, credentialsContainer);
-      } catch (error) {
-        alert(error.message);
-      }
-    }
-
-    function renderCredentials(credentials, container) {
-      container.innerHTML = '';
-      if (!credentials || credentials.length === 0) {
-        container.innerHTML = '<p class="empty-state">No credentials saved yet.</p>';
+      if (!credentials.length) {
+        credentialList.innerHTML = '<p class="empty-state">No credentials stored yet.</p>';
         return;
       }
 
-      credentials.forEach(cred => {
-        const credElement = document.createElement('div');
-        credElement.className = 'credential-item';
-        credElement.innerHTML = `
+      credentials.forEach((cred) => {
+        const div = document.createElement("div");
+        div.className = "credential-item";
+
+        div.innerHTML = `
           <div class="credential-header">
-            <h3>${cred.name}</h3>
-            <span>${cred.site_name}</span>
+            <strong>${cred.site}</strong>
+            <button class="delete-credential" data-id="${cred.id}">Delete</button>
           </div>
           <div class="credential-details">
-            <p>Username: ${cred.account_username}</p>
+            <p><strong>Username:</strong> ${cred.username}</p>
             <div class="password-container">
-              <span class="password-display" id="password-${cred.id}">**********</span>
-              <button class="toggle-password" data-id="${cred.id}">Show</button>
-              <button class="delete-credential" data-id="${cred.id}">Delete</button>
+              <span class="password-display" id="pwd-${cred.id}">••••••••</span>
+              <button class="toggle-password" data-password="${cred.password}" data-id="${cred.id}">Show</button>
             </div>
           </div>
         `;
-        container.appendChild(credElement);
-      });
 
-      document.querySelectorAll('.toggle-password').forEach(button => {
-        button.addEventListener('click', async (e) => {
-          const id = e.target.dataset.id;
-          const passwordSpan = document.getElementById(`password-${id}`);
-          const credential = credentials.find(c => c.id == id);
-          if (passwordSpan.textContent === '**********') {
-            passwordSpan.textContent = credential.password_decrypted || 'Error';
-            button.textContent = 'Hide';
-          } else {
-            passwordSpan.textContent = '**********';
-            button.textContent = 'Show';
-          }
-        });
-      });
-
-      document.querySelectorAll('.delete-credential').forEach(button => {
-        button.addEventListener('click', async (e) => {
-          const id = e.target.dataset.id;
-          try {
-            await deleteCredential(id);
-            loadAndRenderCredentials();
-          } catch (error) {
-            alert(error.message);
-          }
-        });
+        credentialList.appendChild(div);
       });
     }
 
-    // Initial load
-    loadAndRenderCredentials();
+    credentialList.addEventListener("click", (e) => {
+      if (e.target.classList.contains("toggle-password")) {
+        const id = e.target.dataset.id;
+        const span = document.getElementById(`pwd-${id}`);
+        const current = span.textContent;
+        if (current === "••••••••") {
+          span.textContent = e.target.dataset.password;
+          e.target.textContent = "Hide";
+        } else {
+          span.textContent = "••••••••";
+          e.target.textContent = "Show";
+        }
+      }
+
+      if (e.target.classList.contains("delete-credential")) {
+        const id = e.target.dataset.id;
+        deleteCredential(id).then(renderCredentials);
+      }
+    });
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const site = document.getElementById("site").value;
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+      await addCredential(site, username, password);
+      form.reset();
+      renderCredentials();
+    });
+
+    logoutBtn.addEventListener("click", async () => {
+      await logout();
+      window.location.href = "/natpass/index.html";
+    });
+
+    renderCredentials();
   </script>
 </body>
 </html>
