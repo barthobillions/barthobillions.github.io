@@ -62,6 +62,33 @@ input[type="email"] {
   font-size: 16px;
 }
 
+/* Password input container styles */
+.password-input-container {
+  position: relative;
+  margin-bottom: 15px;
+}
+
+.password-input-container input {
+  padding-right: 40px; /* Space for toggle button */
+}
+
+.toggle-password-visibility {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--light-text);
+  font-size: 1.1em;
+  padding: 5px;
+}
+
+.toggle-password-visibility:hover {
+  color: var(--primary-color);
+}
+
 .form-actions {
   margin-top: 15px;
 }
@@ -148,18 +175,39 @@ button {
 .password-container {
   display: flex;
   align-items: center;
+  gap: 10px;
 }
 
 .password-display {
   flex-grow: 1;
   font-family: monospace;
+  padding: 5px;
+  background-color: #f5f5f5;
+  border-radius: 3px;
 }
 
 .toggle-password,
 .delete-credential {
-  margin-left: 10px;
   padding: 5px 10px;
   font-size: 14px;
+}
+
+.toggle-password {
+  background-color: #ecf0f1;
+  color: var(--text-color);
+}
+
+.toggle-password:hover {
+  background-color: #d5dbdb;
+}
+
+.delete-credential {
+  background-color: var(--danger-color);
+  color: white;
+}
+
+.delete-credential:hover {
+  background-color: var(--danger-dark);
 }
 
 .hidden {

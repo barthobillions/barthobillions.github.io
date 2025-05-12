@@ -22,8 +22,19 @@
         <div id="add-credential-form" class="hidden">
           <input type="text" id="site-name" placeholder="Website (e.g. google.com)" />
           <input type="text" id="account-username" placeholder="Username or Email" />
-          <input type="password" id="site-password" placeholder="Password" />
-          <input type="password" id="master-password" placeholder="Your Master Password" />
+          
+          <div class="password-input-container">
+            <input type="password" id="site-password" placeholder="Password" />
+            <button type="button" class="toggle-password-visibility" data-target="site-password">👁️</button>
+          </div>
+          
+          <div class="password-input-container">
+            <input type="password" id="confirm-site-password" placeholder="Confirm Password" />
+            <button type="button" class="toggle-password-visibility" data-target="confirm-site-password">👁️</button>
+          </div>
+          
+          <input type="hidden" id="master-password" />
+          
           <div class="form-actions">
             <button id="save-password" class="primary-btn">Save Credential</button>
           </div>
@@ -64,9 +75,13 @@
     
     async function loadAndRenderCredentials() {
       try {
-        const masterPassword = prompt("Enter your master password to view credentials:");
-        if (!masterPassword) return;
+        const masterPassword = sessionStorage.getItem('tempMasterPassword');
+        if (!masterPassword) {
+          window.location.href = '/natpass/index.html';
+          return;
+        }
         
+        document.getElementById('master-password').value = masterPassword;
         const credentials = await loadCredentials(masterPassword);
         const container = document.getElementById('credentials-list');
         renderCredentials(credentials, container);
@@ -85,15 +100,36 @@
         toggleElement('add-credential-form', 'toggle-add-credential');
       });
       
+      // Password visibility toggles
+      document.querySelectorAll('.toggle-password-visibility').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const targetId = this.dataset.target;
+          const input = document.getElementById(targetId);
+          if (input.type === 'password') {
+            input.type = 'text';
+            this.textContent = '👁️';
+          } else {
+            input.type = 'password';
+            this.textContent = '👁️';
+          }
+        });
+      });
+      
       // Save new credential
       document.getElementById('save-password').addEventListener('click', async () => {
         const site = document.getElementById('site-name').value;
         const username = document.getElementById('account-username').value;
         const password = document.getElementById('site-password').value;
+        const confirmPassword = document.getElementById('confirm-site-password').value;
         const masterPassword = document.getElementById('master-password').value;
         
-        if (!site || !username || !password || !masterPassword) {
+        if (!site || !username || !password || !confirmPassword) {
           alert('Please fill in all fields');
+          return;
+        }
+        
+        if (password !== confirmPassword) {
+          alert('Passwords do not match');
           return;
         }
         
@@ -123,15 +159,13 @@
           const passwordDisplay = this.previousElementSibling;
           
           if (this.textContent === 'Show') {
-            // In a real app, you would decrypt just this password
             this.textContent = 'Hide';
             passwordDisplay.textContent = 'Loading...';
             
             try {
-              const masterPassword = prompt("Enter your master password to view this credential:");
+              const masterPassword = sessionStorage.getItem('tempMasterPassword');
               if (!masterPassword) return;
               
-              // Note: In a real app, you would only decrypt this one password
               const credentials = await loadCredentials(masterPassword);
               const cred = credentials.find(c => c.id === credentialId);
               

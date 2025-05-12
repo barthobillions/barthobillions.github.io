@@ -11,11 +11,13 @@ export async function login(email, password) {
     throw new Error("Please enter a valid email and password.");
   }
 
-  // Try to sign in first
+  // Store password in sessionStorage (temporary for master password)
+  sessionStorage.setItem('tempMasterPassword', password);
+
   const { data, error: signInError } = await supabase.auth.signInWithPassword({ email, password });
 
   if (signInError) {
-    // If sign-in fails, try sign-up
+    sessionStorage.removeItem('tempMasterPassword');
     const { error: signUpError } = await supabase.auth.signUp({ email, password });
     if (signUpError) {
       throw new Error(`Sign in/up failed: ${signUpError.message}`);
@@ -43,6 +45,7 @@ export async function signup(email, password) {
  * @returns {Promise<void>}
  */
 export async function logout() {
+  sessionStorage.removeItem('tempMasterPassword');
   await supabase.auth.signOut();
 }
 
