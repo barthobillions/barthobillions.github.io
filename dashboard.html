@@ -9,17 +9,17 @@
 <body>
   <div id="app">
     <h1>Your Credentials</h1>
-    <button id="logout-btn" class="button-secondary">Logout</button>
     <button id="add-credential-btn" class="primary-btn">Add New Credential</button>
 
-    <div id="add-credential-form" class="form-group hidden">
-      <input type="text" id="cred-name" placeholder="Credential Name" required />
-      <input type="text" id="cred-site" placeholder="Site Name" required />
-      <input type="text" id="cred-username" placeholder="Username" required />
-      <input type="password" id="cred-password" placeholder="Password" required />
-      <input type="password" id="confirm-cred-password" placeholder="Confirm Password" required />
-      <label><input type="checkbox" id="show-password-checkbox" /> Show Passwords</label>
-      <button id="save-credential" class="primary-btn">Save Credential</button>
+    <!-- Wrapped form inside a credential-item for consistent styling -->
+    <div class="credential-item hidden" id="form-wrapper">
+      <div id="add-credential-form" class="form-group">
+        <input type="text" id="cred-name" placeholder="Credential Name" required />
+        <input type="text" id="cred-site" placeholder="Site Name" required />
+        <input type="text" id="cred-username" placeholder="Username" required />
+        <input type="password" id="cred-password" placeholder="Password" required />
+        <button id="save-credential" class="primary-btn">Save Credential</button>
+      </div>
     </div>
 
     <div id="credentials-container"></div>
@@ -29,30 +29,16 @@
   <script type="module">
     import { supabase } from '/natpass/js/supabase.js';
     import { getKeyFromPassword, encryptData, decryptData } from '/natpass/js/encryption.js';
-    import { getMasterPassword, logout } from '/natpass/js/auth.js';
+    import { getMasterPassword } from '/natpass/js/auth.js';
     import { saveCredential, loadCredentials, deleteCredential } from '/natpass/js/credentials.js';
 
     const addCredentialBtn = document.getElementById('add-credential-btn');
-    const addCredentialForm = document.getElementById('add-credential-form');
+    const formWrapper = document.getElementById('form-wrapper');
     const saveCredentialBtn = document.getElementById('save-credential');
     const credentialsContainer = document.getElementById('credentials-container');
-    const logoutBtn = document.getElementById('logout-btn');
-
-    logoutBtn.addEventListener('click', async () => {
-      await logout();
-      window.location.href = '/natpass/index.html';
-    });
 
     addCredentialBtn.addEventListener('click', () => {
-      addCredentialForm.classList.toggle('hidden');
-    });
-
-    document.getElementById('show-password-checkbox').addEventListener('change', function() {
-      const password = document.getElementById('cred-password');
-      const confirm = document.getElementById('confirm-cred-password');
-      const type = this.checked ? 'text' : 'password';
-      password.type = type;
-      confirm.type = type;
+      formWrapper.classList.toggle('hidden');
     });
 
     saveCredentialBtn.addEventListener('click', async () => {
@@ -60,16 +46,10 @@
       const site = document.getElementById('cred-site').value;
       const username = document.getElementById('cred-username').value;
       const password = document.getElementById('cred-password').value;
-      const confirmPassword = document.getElementById('confirm-cred-password').value;
-
-      if (password !== confirmPassword) {
-        alert('Passwords do not match.');
-        return;
-      }
 
       try {
         await saveCredential(name, site, username, password);
-        addCredentialForm.classList.add('hidden');
+        formWrapper.classList.add('hidden');
         loadAndRenderCredentials();
       } catch (error) {
         alert(error.message);
@@ -140,6 +120,7 @@
       });
     }
 
+    // Initial load
     loadAndRenderCredentials();
   </script>
 </body>
