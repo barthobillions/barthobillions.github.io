@@ -11,12 +11,15 @@
     <h1>Your Credentials</h1>
     <button id="add-credential-btn" class="primary-btn">Add New Credential</button>
 
-    <div id="add-credential-form" class="form-group hidden">
-      <input type="text" id="cred-name" placeholder="Credential Name" required />
-      <input type="text" id="cred-site" placeholder="Site Name" required />
-      <input type="text" id="cred-username" placeholder="Username" required />
-      <input type="password" id="cred-password" placeholder="Password" required />
-      <button id="save-credential" class="primary-btn">Save Credential</button>
+    <!-- Wrapped form inside a credential-item for consistent styling -->
+    <div class="credential-item hidden" id="form-wrapper">
+      <div id="add-credential-form" class="form-group">
+        <input type="text" id="cred-name" placeholder="Credential Name" required />
+        <input type="text" id="cred-site" placeholder="Site Name" required />
+        <input type="text" id="cred-username" placeholder="Username" required />
+        <input type="password" id="cred-password" placeholder="Password" required />
+        <button id="save-credential" class="primary-btn">Save Credential</button>
+      </div>
     </div>
 
     <div id="credentials-container"></div>
@@ -30,12 +33,12 @@
     import { saveCredential, loadCredentials, deleteCredential } from '/natpass/js/credentials.js';
 
     const addCredentialBtn = document.getElementById('add-credential-btn');
-    const addCredentialForm = document.getElementById('add-credential-form');
+    const formWrapper = document.getElementById('form-wrapper');
     const saveCredentialBtn = document.getElementById('save-credential');
     const credentialsContainer = document.getElementById('credentials-container');
 
     addCredentialBtn.addEventListener('click', () => {
-      addCredentialForm.classList.toggle('hidden');
+      formWrapper.classList.toggle('hidden');
     });
 
     saveCredentialBtn.addEventListener('click', async () => {
@@ -46,7 +49,7 @@
 
       try {
         await saveCredential(name, site, username, password);
-        addCredentialForm.classList.add('hidden');
+        formWrapper.classList.add('hidden');
         loadAndRenderCredentials();
       } catch (error) {
         alert(error.message);
@@ -65,7 +68,7 @@
     function renderCredentials(credentials, container) {
       container.innerHTML = '';
       if (!credentials || credentials.length === 0) {
-        container.innerHTML = '<p>No credentials saved yet.</p>';
+        container.innerHTML = '<p class="empty-state">No credentials saved yet.</p>';
         return;
       }
 

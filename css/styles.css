@@ -72,14 +72,21 @@ input[type="text"]:focus {
   text-decoration: underline;
 }
 
-/* Credential List */
+/* Credential Item and Form Wrapper */
 .credential-item {
   border: 1px solid #ccc;
-  padding: 10px;
-  margin-bottom: 10px;
+  padding: 15px;
+  margin-bottom: 15px;
   border-radius: 5px;
+  background-color: #fff;
 }
 
+/* Form inside credential-item */
+.credential-item .form-group {
+  margin-top: 10px;
+}
+
+/* Credential Info */
 .credential-header {
   display: flex;
   justify-content: space-between;
@@ -128,14 +135,7 @@ button.delete-credential:hover {
   background-color: #c82333;
 }
 
-/* Credential Form */
-#add-credential-form {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: 20px;
-}
-
+/* Hidden class */
 .hidden {
   display: none;
 }
@@ -146,7 +146,7 @@ button.delete-credential:hover {
   color: #777;
 }
 
-/* Modal and Popup (if needed) */
+/* Modal */
 .modal {
   display: none;
   position: fixed;
