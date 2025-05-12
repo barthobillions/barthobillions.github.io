@@ -20,7 +20,7 @@ export async function saveCredential(site, username, password, masterPassword) {
     user_id: user.id,
     site_name: site,
     account_username: username,
-    password_encrypted: encrypted
+    password: encrypted
   }).select();
 
   if (error) throw error;
