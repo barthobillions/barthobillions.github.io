@@ -1,6 +1,14 @@
 import { supabase } from '/natpass/js/supabase.js';
 import { getKeyFromPassword, encryptData, decryptData } from '/natpass/js/encryption.js';
 
+/**
+ * Saves a new credential for the current user
+ * @param {string} site - Website/service name
+ * @param {string} username - Username/email for the site
+ * @param {string} password - Password for the site
+ * @param {string} masterPassword - User's master password for encryption
+ * @returns {Promise<Object>} - Saved credential data
+ */
 export async function saveCredential(site, username, password, masterPassword) {
   const { data: user } = await supabase.auth.getUser();
   if (!user) throw new Error("User not logged in.");
@@ -19,6 +27,11 @@ export async function saveCredential(site, username, password, masterPassword) {
   return data;
 }
 
+/**
+ * Loads all credentials for the current user
+ * @param {string} masterPassword - User's master password for decryption
+ * @returns {Promise<Array>} - Array of credential objects
+ */
 export async function loadCredentials(masterPassword) {
   const { data: user } = await supabase.auth.getUser();
   if (!user) throw new Error("User not logged in.");
@@ -30,6 +43,7 @@ export async function loadCredentials(masterPassword) {
 
   if (error) throw error;
 
+  // Decrypt passwords if masterPassword is provided
   if (masterPassword) {
     const key = await getKeyFromPassword(masterPassword);
     for (const cred of data) {
@@ -45,6 +59,11 @@ export async function loadCredentials(masterPassword) {
   return data;
 }
 
+/**
+ * Deletes a credential by ID
+ * @param {string} id - Credential ID to delete
+ * @returns {Promise<void>}
+ */
 export async function deleteCredential(id) {
   const { error } = await supabase.from('credentials').delete().eq('id', id);
   if (error) throw error;
