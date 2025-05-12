@@ -1,37 +1,51 @@
 import { supabase } from '/natpass/js/supabase.js';
 
 export async function login(email, password) {
-    // Try to sign in first
+  try {
+    sessionStorage.removeItem('masterPassword');
+    
     const { data, error: signInError } = await supabase.auth.signInWithPassword({
-        email,
-        password
+      email,
+      password
     });
 
     if (signInError) {
-        // If sign-in fails, try to sign up
-        const { error: signUpError } = await supabase.auth.signUp({
-            email,
-            password
-        });
-        if (signUpError) throw signUpError;
-        return { needsConfirmation: true };
+      const { error: signUpError } = await supabase.auth.signUp({
+        email,
+        password
+      });
+      if (signUpError) throw signUpError;
+      return { needsConfirmation: true };
     }
 
-    // Store password for credential encryption
     sessionStorage.setItem('masterPassword', password);
     return data;
+  } catch (error) {
+    sessionStorage.removeItem('masterPassword');
+    throw error;
+  }
 }
 
 export async function logout() {
+  try {
     sessionStorage.removeItem('masterPassword');
     await supabase.auth.signOut();
+  } catch (error) {
+    console.error('Logout error:', error);
+    throw error;
+  }
 }
 
 export async function getCurrentUser() {
+  try {
     const { data } = await supabase.auth.getUser();
     return data?.user || null;
+  } catch (error) {
+    console.error('Get user error:', error);
+    return null;
+  }
 }
 
 export function getMasterPassword() {
-    return sessionStorage.getItem('masterPassword');
+  return sessionStorage.getItem('masterPassword');
 }
