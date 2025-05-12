@@ -1,75 +1,10 @@
-:root {
-  --primary-color: #3498db;
-  --primary-dark: #2980b9;
-  --danger-color: #e74c3c;
-  --danger-dark: #c0392b;
-  --text-color: #333;
-  --light-text: #7f8c8d;
-  --bg-color: #f5f5f5;
-  --card-bg: #fff;
-  --border-radius: 5px;
-  --box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-body {
-  font-family: 'Arial', sans-serif;
-  background-color: var(--bg-color);
-  color: var(--text-color);
-  line-height: 1.6;
-  padding: 20px;
-}
-
-#app {
-  max-width: 800px;
-  margin: 0 auto;
-  background-color: var(--card-bg);
-  box-shadow: var(--box-shadow);
-  border-radius: var(--border-radius);
-  overflow: hidden;
-}
-
-.app-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px;
-  background-color: var(--primary-color);
-  color: white;
-}
-
-.dashboard-content {
-  padding: 20px;
-}
-
-.form-group {
-  margin-bottom: 20px;
-}
-
-input[type="text"],
-input[type="password"],
-input[type="email"] {
-  width: 100%;
-  padding: 10px;
-  margin: 8px 0;
-  border: 1px solid #ddd;
-  border-radius: var(--border-radius);
-  font-size: 16px;
-}
-
-/* Password input container styles */
 .password-input-container {
   position: relative;
   margin-bottom: 15px;
 }
 
 .password-input-container input {
-  padding-right: 40px; /* Space for toggle button */
+  padding-right: 40px;
 }
 
 .toggle-password-visibility {
@@ -85,149 +20,43 @@ input[type="email"] {
   padding: 5px;
 }
 
-.toggle-password-visibility:hover {
-  color: var(--primary-color);
-}
-
-.form-actions {
-  margin-top: 15px;
-}
-
-button {
-  cursor: pointer;
-  border: none;
-  border-radius: var(--border-radius);
-  padding: 10px 15px;
-  font-size: 16px;
-  transition: background-color 0.3s;
-}
-
-.primary-btn {
-  background-color: var(--primary-color);
-  color: white;
-}
-
-.primary-btn:hover {
-  background-color: var(--primary-dark);
-}
-
-.danger-btn {
-  background-color: var(--danger-color);
-  color: white;
-}
-
-.danger-btn:hover {
-  background-color: var(--danger-dark);
-}
-
-.logout-btn {
-  background-color: transparent;
-  border: 1px solid white;
-  color: white;
-}
-
-.toggle-section-btn {
-  background-color: var(--primary-color);
-  color: white;
-  width: 100%;
-  text-align: left;
-  margin-bottom: 10px;
-}
-
-.credentials-container {
-  margin-top: 20px;
-}
-
-.credential-group {
-  margin-bottom: 25px;
-  background-color: #f9f9f9;
-  border-radius: var(--border-radius);
-  padding: 15px;
-}
-
-.credential-group h3 {
-  color: var(--primary-dark);
-  margin-bottom: 10px;
-}
-
-.credential-item {
-  background-color: var(--card-bg);
-  padding: 15px;
-  margin-bottom: 10px;
-  border-radius: var(--border-radius);
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.05);
-}
-
-.credential-header {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 10px;
-}
-
-.site-name {
-  font-weight: bold;
-}
-
-.username {
+.empty-state, .error-state {
+  text-align: center;
+  padding: 20px;
   color: var(--light-text);
 }
 
-.password-container {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+.error-state {
+  color: var(--danger-color);
 }
 
-.password-display {
-  flex-grow: 1;
-  font-family: monospace;
-  padding: 5px;
-  background-color: #f5f5f5;
-  border-radius: 3px;
+.error-state p {
+  margin-bottom: 15px;
 }
 
-.toggle-password,
-.delete-credential {
-  padding: 5px 10px;
-  font-size: 14px;
+.credential-item {
+  margin-bottom: 20px;
+  padding: 15px;
+  background: var(--card-bg);
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
 }
 
-.toggle-password {
-  background-color: #ecf0f1;
-  color: var(--text-color);
-}
-
-.toggle-password:hover {
-  background-color: #d5dbdb;
-}
-
-.delete-credential {
-  background-color: var(--danger-color);
-  color: white;
-}
-
-.delete-credential:hover {
-  background-color: var(--danger-dark);
-}
-
-.hidden {
-  display: none;
-}
-
-.text-center {
-  text-align: center;
-}
-
-.auth-link {
-  margin-top: 20px;
-  text-align: center;
-}
-
-.auth-link a {
+.credential-header h3 {
   color: var(--primary-color);
-  text-decoration: none;
+  margin-bottom: 5px;
 }
 
-.auth-link a:hover {
-  text-decoration: underline;
+.credential-details {
+  margin-top: 10px;
+}
+
+.site-name {
+  color: var(--light-text);
+  font-size: 0.9em;
+}
+
+.username {
+  display: block;
+  margin-bottom: 5px;
 }

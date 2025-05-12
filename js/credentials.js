@@ -1,70 +1,83 @@
 import { supabase } from '/natpass/js/supabase.js';
 import { getKeyFromPassword, encryptData, decryptData } from '/natpass/js/encryption.js';
+import { getMasterPassword } from '/natpass/js/auth.js';
 
-/**
- * Saves a new credential for the current user
- * @param {string} site - Website/service name
- * @param {string} username - Username/email for the site
- * @param {string} password - Password for the site
- * @param {string} masterPassword - User's master password for encryption
- * @returns {Promise<Object>} - Saved credential data
- */
-export async function saveCredential(site, username, password, masterPassword) {
-  const { data: user } = await supabase.auth.getUser();
-  if (!user) throw new Error("User not logged in.");
+export async function saveCredential(name, site, username, password) {
+  try {
+    const masterPassword = getMasterPassword();
+    if (!masterPassword) throw new Error("No master password available");
 
-  const key = await getKeyFromPassword(masterPassword);
-  const encrypted = await encryptData(key, password);
+    const { data: user } = await supabase.auth.getUser();
+    if (!user) throw new Error("User not logged in");
 
-  const { data, error } = await supabase.from('credentials').insert({
-    user_id: user.id,
-    site_name: site,
-    account_username: username,
-    password: encrypted
-  }).select();
-
-  if (error) throw error;
-  return data;
-}
-
-/**
- * Loads all credentials for the current user
- * @param {string} masterPassword - User's master password for decryption
- * @returns {Promise<Array>} - Array of credential objects
- */
-export async function loadCredentials(masterPassword) {
-  const { data: user } = await supabase.auth.getUser();
-  if (!user) throw new Error("User not logged in.");
-
-  const { data, error } = await supabase.from('credentials')
-    .select('*')
-    .eq('user_id', user.id)
-    .order('site_name');
-
-  if (error) throw error;
-
-  // Decrypt passwords if masterPassword is provided
-  if (masterPassword) {
     const key = await getKeyFromPassword(masterPassword);
-    for (const cred of data) {
-      try {
-        cred.password_decrypted = await decryptData(key, cred.password_encrypted);
-      } catch (err) {
-        console.error("Failed to decrypt password:", err);
-        cred.password_decrypted = "Decryption failed";
-      }
-    }
-  }
+    const encryptedPassword = await encryptData(key, password);
 
-  return data;
+    const { data, error } = await supabase.from('credentials').insert({
+      user_id: user.user.id,
+      name: name,
+      site_name: site,
+      account_name: username,
+      password: encryptedPassword
+    }).select();
+
+    if (error) throw error;
+    return data;
+  } catch (error) {
+    console.error('Save credential error:', error);
+    throw new Error('Failed to save credential');
+  }
 }
 
-/**
- * Deletes a credential by ID
- * @param {string} id - Credential ID to delete
- * @returns {Promise<void>}
- */
+export async function loadCredentials() {
+  try {
+    const masterPassword = getMasterPassword();
+    if (!masterPassword) throw new Error("No master password available");
+
+    const { data: user } = await supabase.auth.getUser();
+    if (!user) throw new Error("User not logged in");
+
+    const { data, error } = await supabase.from('credentials')
+      .select('*')
+      .eq('user_id', user.user.id)
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+    if (!data || data.length === 0) return [];
+
+    const key = await getKeyFromPassword(masterPassword);
+    const decryptedCredentials = await Promise.all(data.map(async cred => {
+      try {
+        const decrypted = await decryptData(key, cred.password);
+        return { 
+          ...cred, 
+          password_decrypted: decrypted,
+          account_username: cred.account_name
+        };
+      } catch (decryptError) {
+        console.error('Decryption failed for credential:', cred.id, decryptError);
+        return { 
+          ...cred,
+          password_decrypted: 'Decryption failed',
+          account_username: cred.account_name
+        };
+      }
+    }));
+
+    return decryptedCredentials;
+  } catch (error) {
+    console.error('Load credentials error:', error);
+    throw new Error('Failed to load credentials');
+  }
+}
+
 export async function deleteCredential(id) {
-  const { error } = await supabase.from('credentials').delete().eq('id', id);
-  if (error) throw error;
+  try {
+    const { error } = await supabase.from('credentials').delete().eq('id', id);
+    if (error) throw error;
+    return true;
+  } catch (error) {
+    console.error('Delete credential error:', error);
+    throw new Error('Failed to delete credential');
+  }
 }
