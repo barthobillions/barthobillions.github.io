@@ -1,6 +1,115 @@
+:root {
+  --primary-color: #3498db;
+  --primary-dark: #2980b9;
+  --danger-color: #e74c3c;
+  --danger-dark: #c0392b;
+  --text-color: #333;
+  --light-text: #7f8c8d;
+  --bg-color: #f5f5f5;
+  --card-bg: #fff;
+  --border-radius: 5px;
+  --box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Base Styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Arial', sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  line-height: 1.6;
+  padding: 20px;
+}
+
+#app {
+  max-width: 800px;
+  margin: 0 auto;
+  background-color: var(--card-bg);
+  box-shadow: var(--box-shadow);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+}
+
+/* Header Styles */
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.logout-btn {
+  background-color: transparent;
+  border: 1px solid white;
+  color: white;
+  padding: 8px 15px;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.logout-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Main Content Styles */
+.dashboard-content {
+  padding: 20px;
+}
+
+.toggle-section-btn {
+  background-color: var(--primary-color);
+  color: white;
+  width: 100%;
+  text-align: left;
+  padding: 12px 15px;
+  margin-bottom: 15px;
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s;
+}
+
+.toggle-section-btn:hover {
+  background-color: var(--primary-dark);
+}
+
+/* Form Styles */
+#add-credential-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="email"] {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+  border-radius: var(--border-radius);
+  font-size: 16px;
+  transition: border-color 0.3s;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="email"]:focus {
+  outline: none;
+  border-color: var(--primary-color);
+}
+
 .password-input-container {
   position: relative;
-  margin-bottom: 15px;
 }
 
 .password-input-container input {
@@ -20,9 +129,126 @@
   padding: 5px;
 }
 
-.empty-state, .error-state {
-  text-align: center;
+.toggle-password-visibility:hover {
+  color: var(--primary-color);
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.primary-btn {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: var(--border-radius);
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s;
+}
+
+.primary-btn:hover {
+  background-color: var(--primary-dark);
+}
+
+/* Credentials List Styles */
+.credentials-section h2 {
+  margin-bottom: 20px;
+  color: var(--text-color);
+}
+
+.credentials-container {
+  margin-top: 20px;
+}
+
+.credential-item {
+  background-color: var(--card-bg);
   padding: 20px;
+  margin-bottom: 15px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow);
+}
+
+.credential-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 10px;
+}
+
+.credential-header h3 {
+  color: var(--primary-color);
+  font-size: 1.1em;
+}
+
+.site-name {
+  color: var(--light-text);
+  font-size: 0.9em;
+}
+
+.credential-details {
+  margin-top: 10px;
+}
+
+.username {
+  display: block;
+  margin-bottom: 10px;
+  color: var(--text-color);
+}
+
+.password-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.password-display {
+  font-family: monospace;
+  padding: 8px 12px;
+  background-color: #f9f9f9;
+  border-radius: 3px;
+  flex-grow: 1;
+}
+
+.toggle-password,
+.delete-credential {
+  padding: 8px 12px;
+  border-radius: var(--border-radius);
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.toggle-password {
+  background-color: #ecf0f1;
+  color: var(--text-color);
+  border: none;
+}
+
+.toggle-password:hover {
+  background-color: #d5dbdb;
+}
+
+.delete-credential {
+  background-color: var(--danger-color);
+  color: white;
+  border: none;
+}
+
+.delete-credential:hover {
+  background-color: var(--danger-dark);
+}
+
+/* State Styles */
+.hidden {
+  display: none;
+}
+
+.empty-state,
+.error-state {
+  text-align: center;
+  padding: 40px 20px;
   color: var(--light-text);
 }
 
@@ -34,29 +260,21 @@
   margin-bottom: 15px;
 }
 
-.credential-item {
-  margin-bottom: 20px;
-  padding: 15px;
-  background: var(--card-bg);
-  border-radius: var(--border-radius);
-  box-shadow: var(--box-shadow);
+/* Utility Classes */
+.text-center {
+  text-align: center;
 }
 
-.credential-header h3 {
+.auth-link {
+  margin-top: 20px;
+  text-align: center;
+}
+
+.auth-link a {
   color: var(--primary-color);
-  margin-bottom: 5px;
+  text-decoration: none;
 }
 
-.credential-details {
-  margin-top: 10px;
-}
-
-.site-name {
-  color: var(--light-text);
-  font-size: 0.9em;
-}
-
-.username {
-  display: block;
-  margin-bottom: 5px;
+.auth-link a:hover {
+  text-decoration: underline;
 }
