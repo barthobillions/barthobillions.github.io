@@ -1,64 +1,60 @@
 /**
- * Derives a cryptographic key from a password using PBKDF2
- * @param {string} password - The password to derive the key from
- * @returns {Promise<CryptoKey>} - Derived cryptographic key
+ * Secure encryption/decryption utilities using Web Crypto API
  */
+
+const STATIC_SALT = 'natpass-static-salt-1234'; // In production, use per-user salts
+
 export async function getKeyFromPassword(password) {
-  const enc = new TextEncoder();
-  const keyMaterial = await window.crypto.subtle.importKey(
-    'raw', 
-    enc.encode(password), 
-    'PBKDF2', 
-    false, 
-    ['deriveKey']
-  );
-  
-  return crypto.subtle.deriveKey(
-    {
-      name: 'PBKDF2',
-      salt: enc.encode('static-salt'), // Note: In production, use a unique salt per user
-      iterations: 100000,
-      hash: 'SHA-256'
-    },
-    keyMaterial,
-    { name: 'AES-GCM', length: 256 },
-    false,
-    ['encrypt', 'decrypt']
-  );
+    const enc = new TextEncoder();
+    const keyMaterial = await crypto.subtle.importKey(
+        'raw',
+        enc.encode(password),
+        'PBKDF2',
+        false,
+        ['deriveKey']
+    );
+
+    return crypto.subtle.deriveKey(
+        {
+            name: 'PBKDF2',
+            salt: enc.encode(STATIC_SALT),
+            iterations: 100000,
+            hash: 'SHA-256'
+        },
+        keyMaterial,
+        { name: 'AES-GCM', length: 256 },
+        false,
+        ['encrypt', 'decrypt']
+    );
 }
 
-/**
- * Encrypts data using AES-GCM
- * @param {CryptoKey} key - The cryptographic key
- * @param {string} data - Data to encrypt
- * @returns {Promise<string>} - Base64-encoded encrypted data with IV
- */
 export async function encryptData(key, data) {
-  const enc = new TextEncoder();
-  const iv = crypto.getRandomValues(new Uint8Array(12));
-  const ciphertext = await crypto.subtle.encrypt(
-    { name: 'AES-GCM', iv },
-    key,
-    enc.encode(data)
-  );
-  const combined = new Uint8Array([...iv, ...new Uint8Array(ciphertext)]);
-  return btoa(String.fromCharCode(...combined));
+    const iv = crypto.getRandomValues(new Uint8Array(12));
+    const encrypted = await crypto.subtle.encrypt(
+        { name: 'AES-GCM', iv },
+        key,
+        new TextEncoder().encode(data)
+    );
+
+    const combined = new Uint8Array([...iv, ...new Uint8Array(encrypted)]);
+    return btoa(String.fromCharCode(...combined));
 }
 
-/**
- * Decrypts data encrypted with AES-GCM
- * @param {CryptoKey} key - The cryptographic key
- * @param {string} encryptedData - Base64-encoded encrypted data with IV
- * @returns {Promise<string>} - Decrypted data
- */
 export async function decryptData(key, encryptedData) {
-  const combined = new Uint8Array(atob(encryptedData).split('').map(c => c.charCodeAt(0)));
-  const iv = combined.slice(0, 12);
-  const ciphertext = combined.slice(12);
-  const decrypted = await crypto.subtle.decrypt(
-    { name: 'AES-GCM', iv },
-    key,
-    ciphertext
-  );
-  return new TextDecoder().decode(decrypted);
+    const binaryStr = atob(encryptedData);
+    const bytes = new Uint8Array(binaryStr.length);
+    for (let i = 0; i < binaryStr.length; i++) {
+        bytes[i] = binaryStr.charCodeAt(i);
+    }
+
+    const iv = bytes.slice(0, 12);
+    const ciphertext = bytes.slice(12);
+
+    const decrypted = await crypto.subtle.decrypt(
+        { name: 'AES-GCM', iv },
+        key,
+        ciphertext
+    );
+
+    return new TextDecoder().decode(decrypted);
 }
