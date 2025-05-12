@@ -1,4 +1,3 @@
-/* ===== BASE STYLES ===== */
 :root {
   --primary-color: #3498db;
   --primary-dark: #2980b9;
@@ -26,7 +25,6 @@ body {
   padding: 20px;
 }
 
-/* ===== LAYOUT ===== */
 #app {
   max-width: 800px;
   margin: 0 auto;
@@ -49,7 +47,6 @@ body {
   padding: 20px;
 }
 
-/* ===== FORM STYLES ===== */
 .form-group {
   margin-bottom: 20px;
 }
@@ -69,7 +66,6 @@ input[type="email"] {
   margin-top: 15px;
 }
 
-/* ===== BUTTON STYLES ===== */
 button {
   cursor: pointer;
   border: none;
@@ -111,7 +107,6 @@ button {
   margin-bottom: 10px;
 }
 
-/* ===== CREDENTIAL STYLES ===== */
 .credentials-container {
   margin-top: 20px;
 }
@@ -167,7 +162,6 @@ button {
   font-size: 14px;
 }
 
-/* ===== UTILITY CLASSES ===== */
 .hidden {
   display: none;
 }

@@ -1,28 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Login - Password Manager</title>
-  <link rel="stylesheet" href="/natpass/css/styles.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - NatPass</title>
+  <link rel="stylesheet" href="/natpass/css/styles.css">
 </head>
 <body>
   <div id="app">
     <h1>Login</h1>
     
     <div class="form-group">
-      <input type="email" id="login-email" placeholder="Email" />
-      <input type="password" id="login-password" placeholder="Password" />
-      <button id="login">Login</button>
+      <input type="email" id="login-email" placeholder="Email" required>
+      <input type="password" id="login-password" placeholder="Password" required>
+      <button id="login" class="primary-btn">Login</button>
     </div>
     
-    <p class="auth-link">Don't have an account? <a href="/signup.html">Create one</a></p>
+    <p class="auth-link">Don't have an account? <a href="/natpass/signup.html">Create one</a></p>
   </div>
 
-  <!-- Load Supabase first -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-  <!-- Then our modules -->
-  <script type="module" src="/natpass/js/auth.js"></script>
   <script type="module">
     import { login } from '/natpass/js/auth.js';
     

@@ -1,8 +1,3 @@
-/**
- * Derives a cryptographic key from a password using PBKDF2
- * @param {string} password - The password to derive the key from
- * @returns {Promise<CryptoKey>} - Derived cryptographic key
- */
 export async function getKeyFromPassword(password) {
   const enc = new TextEncoder();
   const keyMaterial = await window.crypto.subtle.importKey(
@@ -16,7 +11,7 @@ export async function getKeyFromPassword(password) {
   return crypto.subtle.deriveKey(
     {
       name: 'PBKDF2',
-      salt: enc.encode('static-salt'), // Note: In production, use a unique salt per user
+      salt: enc.encode('static-salt'),
       iterations: 100000,
       hash: 'SHA-256'
     },
@@ -27,12 +22,6 @@ export async function getKeyFromPassword(password) {
   );
 }
 
-/**
- * Encrypts data using AES-GCM
- * @param {CryptoKey} key - The cryptographic key
- * @param {string} data - Data to encrypt
- * @returns {Promise<string>} - Base64-encoded encrypted data with IV
- */
 export async function encryptData(key, data) {
   const enc = new TextEncoder();
   const iv = crypto.getRandomValues(new Uint8Array(12));
@@ -45,12 +34,6 @@ export async function encryptData(key, data) {
   return btoa(String.fromCharCode(...combined));
 }
 
-/**
- * Decrypts data encrypted with AES-GCM
- * @param {CryptoKey} key - The cryptographic key
- * @param {string} encryptedData - Base64-encoded encrypted data with IV
- * @returns {Promise<string>} - Decrypted data
- */
 export async function decryptData(key, encryptedData) {
   const combined = new Uint8Array(atob(encryptedData).split('').map(c => c.charCodeAt(0)));
   const iv = combined.slice(0, 12);
