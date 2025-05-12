@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Create Account - Password Manager</title>
   <!-- Link to the centralized stylesheet -->
-  <link rel="stylesheet" href="/css/styles.css" />
+  <link rel="stylesheet" href="/natpass/css/styles.css" />
 </head>
 <body>
   <div id="app">
@@ -36,7 +36,7 @@
     
     <!-- Login link -->
     <p class="auth-link">
-      Already have an account? <a href="/index.html">Log in</a>
+      Already have an account? <a href="/natpass/index.html">Log in</a>
     </p>
   </div>
 
@@ -46,7 +46,7 @@
   <!-- Modular JavaScript -->
   <script type="module">
     // Import the signup function from our auth module
-    import { signup } from '/js/auth.js';
+    import { signup } from '/natpass/js/auth.js';
 
     // Get DOM elements
     const signupBtn = document.getElementById("signup");
@@ -78,7 +78,7 @@
         
         // Success message and redirect
         alert("Account created! Please check your email to confirm your account, then log in.");
-        window.location.href = "/index.html";
+        window.location.href = "/natpass/index.html";
       } catch (error) {
         // Display error message to user
         alert("Sign-up failed: " + error.message);

@@ -1,5 +1,5 @@
-import { supabase } from './supabase.js';
-import { getKeyFromPassword, encryptData, decryptData } from './encryption.js';
+import { supabase } from '/natpass/supabase.js';
+import { getKeyFromPassword, encryptData, decryptData } from '/natpass/encryption.js';
 
 /**
  * Saves a new credential for the current user

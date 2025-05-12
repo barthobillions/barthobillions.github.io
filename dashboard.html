@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Dashboard - Password Manager</title>
-  <link rel="stylesheet" href="/css/styles.css" />
+  <link rel="stylesheet" href="/natpass/css/styles.css" />
 </head>
 <body>
   <div id="app">
@@ -42,16 +42,16 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
   <!-- Then our modules -->
   <script type="module">
-    import { logout, getCurrentUser } from '/js/auth.js';
-    import { saveCredential, loadCredentials, deleteCredential } from '/js/credentials.js';
-    import { toggleElement, renderCredentials } from '/js/ui.js';
+    import { logout, getCurrentUser } from '/natpass/js/auth.js';
+    import { saveCredential, loadCredentials, deleteCredential } from '/natpass/js/credentials.js';
+    import { toggleElement, renderCredentials } from '/natpass/js/ui.js';
     
     // Initialize the dashboard
     document.addEventListener('DOMContentLoaded', async () => {
       // Check if user is logged in
       const user = await getCurrentUser();
       if (!user) {
-        window.location.href = '/index.html';
+        window.location.href = '/natpass/index.html';
         return;
       }
       
@@ -111,7 +111,7 @@
       // Logout
       document.getElementById('logout').addEventListener('click', async () => {
         await logout();
-        window.location.href = '/index.html';
+        window.location.href = '/natpass/index.html';
       });
     }
     

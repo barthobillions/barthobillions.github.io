@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Login - Password Manager</title>
-  <link rel="stylesheet" href="/css/styles.css" />
+  <link rel="stylesheet" href="/natpass/css/styles.css" />
 </head>
 <body>
   <div id="app">
@@ -22,9 +22,9 @@
   <!-- Load Supabase first -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
   <!-- Then our modules -->
-  <script type="module" src="/js/auth.js"></script>
+  <script type="module" src="/natpass/js/auth.js"></script>
   <script type="module">
-    import { login } from '/js/auth.js';
+    import { login } from '/natpass/js/auth.js';
     
     document.getElementById("login").addEventListener("click", async () => {
       const email = document.getElementById("login-email").value;
@@ -35,7 +35,7 @@
         if (result.needsConfirmation) {
           alert("Account created! Please check your email to confirm before logging in.");
         } else {
-          window.location.href = "/dashboard.html";
+          window.location.href = "/natpass/dashboard.html";
         }
       } catch (error) {
         alert(error.message);

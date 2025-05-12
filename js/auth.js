@@ -1,4 +1,4 @@
-import { supabase } from './supabase.js';
+import { supabase } from '/natpass/supabase.js';
 
 /**
  * Handles user login with email and password
