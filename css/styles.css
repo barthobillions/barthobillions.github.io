@@ -1,99 +1,153 @@
+/* Global Styles */
 body {
-  font-family: sans-serif;
+  font-family: 'Segoe UI', sans-serif;
+  background: #fafafa;
+  color: #333;
   margin: 0;
-  background: #f9f9f9;
+  padding: 0;
 }
 
+#app,
+main {
+  max-width: 700px;
+  margin: 30px auto;
+  padding: 20px;
+}
+
+/* Header */
 header {
-  background: #3f51b5;
+  text-align: center;
+  padding: 20px;
+  background-color: #4e9fd1;
   color: white;
-  padding: 1rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  border-radius: 5px;
 }
 
-.primary-btn,
-.logout-btn {
-  background: #3f51b5;
+header h1 {
+  margin: 0;
+}
+
+/* Form */
+.credential-form-wrapper {
+  background: #ffffff;
+  border-left: 4px solid #4e9fd1;
+  padding: 20px;
+  margin: 20px 0;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  transition: all 0.3s ease;
+}
+
+input[type="text"],
+input[type="password"] {
+  padding: 10px;
+  font-size: 15px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  width: 100%;
+}
+
+.primary-btn {
+  padding: 10px;
+  background-color: #4e9fd1;
   color: white;
-  padding: 0.5rem 1rem;
   border: none;
-  border-radius: 4px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.primary-btn:hover {
+  background-color: #3578a3;
+}
+
+.logout-wrapper {
+  text-align: center;
+  margin-top: 30px;
+}
+
+.logout-btn {
+  background-color: #ff6b6b;
+  padding: 10px 20px;
+  border: none;
+  color: white;
+  border-radius: 5px;
   cursor: pointer;
 }
 
-.logout-btn {
-  background: #f44336;
+.logout-btn:hover {
+  background-color: #e94e4e;
 }
 
-main {
-  padding: 1rem;
-  max-width: 800px;
-  margin: auto;
-}
-
-.form {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  margin: 1rem 0;
-}
-
-input {
-  padding: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-}
-
+/* Credential Sticky Notes */
 .credential-board {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 1rem;
-  margin-top: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 15px;
+  margin-top: 20px;
 }
 
-.note {
-  background: #fffca6;
-  padding: 1rem;
+.credential-note {
+  background-color: #fffeb3;
+  padding: 15px;
   border-radius: 10px;
-  box-shadow: 3px 3px 10px rgba(0,0,0,0.1);
-  transform: rotate(-1.5deg);
-  transition: all 0.2s ease;
+  box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
+  transform: rotate(-1deg);
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+  position: relative;
 }
 
-.note:hover {
-  transform: rotate(0deg) scale(1.01);
-  box-shadow: 4px 4px 15px rgba(0,0,0,0.2);
+.credential-note:hover {
+  transform: rotate(0deg) scale(1.02);
+  box-shadow: 4px 4px 15px rgba(0,0,0,0.15);
 }
 
-.note-buttons {
+.note-actions {
   margin-top: 10px;
   display: flex;
-  gap: 0.5rem;
+  justify-content: space-between;
 }
 
-.show-btn, .delete-btn {
-  padding: 4px 8px;
+button.toggle-password {
+  background: #6fcf97;
   border: none;
-  border-radius: 4px;
+  padding: 5px 10px;
+  border-radius: 3px;
+  color: white;
   cursor: pointer;
 }
 
-.show-btn {
-  background: #4caf50;
-  color: white;
+button.toggle-password:hover {
+  background: #55c085;
 }
 
-.delete-btn {
-  background: #e91e63;
+button.delete-credential {
+  background: #ff6b6b;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 3px;
   color: white;
+  cursor: pointer;
 }
 
-.empty {
+button.delete-credential:hover {
+  background: #e94e4e;
+}
+
+/* Animations */
+.fade-in {
+  animation: fadeIn 0.4s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.empty-state {
   text-align: center;
   color: #888;
-  margin-top: 2rem;
+  margin-top: 40px;
 }
 
 .hidden {
