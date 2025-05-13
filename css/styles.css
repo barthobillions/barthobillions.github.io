@@ -136,10 +136,6 @@ input:focus {
   color: #333;
 }
 
-.credential-header h3::before {
-  content: '🔐 ';
-}
-
 .credential-header span::before {
   content: '🌐 ';
   font-size: 90%;
