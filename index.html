@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="/natpass/css/styles.css" />
 </head>
 <body>
-  <header>NatPass</header>
+  <header><h1>NatPass</h1></header>
 
   <main>
     <h2>Login</h2>
@@ -18,13 +18,12 @@
       <label for="login-password">Password</label>
       <input type="password" id="login-password" required placeholder="••••••••" />
 
-      <button type="submit" class="button-primary">Login</button>
+      <button type="submit" class="primary-btn">Login</button>
     </form>
 
     <p class="auth-link">Don't have an account? <a href="/natpass/signup.html">Create one</a></p>
   </main>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
   <script type="module">
     import { login } from '/natpass/js/auth.js';
 

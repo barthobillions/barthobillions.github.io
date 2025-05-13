@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="/natpass/css/styles.css" />
 </head>
 <body>
-  <header>NatPass</header>
+  <header><h1>NatPass</h1></header>
 
   <main>
     <h2>Create Account</h2>
@@ -21,13 +21,12 @@
       <label for="confirm-password">Confirm Password</label>
       <input type="password" id="confirm-password" required placeholder="••••••••" />
 
-      <button type="submit" class="button-primary">Sign Up</button>
+      <button type="submit" class="primary-btn">Sign Up</button>
     </form>
 
     <p class="auth-link">Already have an account? <a href="/natpass/index.html">Log in</a></p>
   </main>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
   <script type="module">
     import { signup } from '/natpass/js/auth.js';
 

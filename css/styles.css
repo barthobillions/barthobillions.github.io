@@ -1,4 +1,6 @@
-/* Global Styles */
+/* ===============================
+   Global Styles
+================================== */
 body {
   font-family: 'Segoe UI', sans-serif;
   background: #fafafa;
@@ -14,41 +16,37 @@ main {
   padding: 20px;
 }
 
-/* Header */
-header {
-  text-align: center;
-  padding: 20px;
-  background-color: #4e9fd1;
-  color: white;
-  border-radius: 5px;
-}
-
-header h1 {
-  margin: 0;
-}
-
-/* Form */
-.credential-form-wrapper {
-  background: #ffffff;
-  border-left: 4px solid #4e9fd1;
-  padding: 20px;
-  margin: 20px 0;
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-  transition: all 0.3s ease;
-}
-
 input[type="text"],
-input[type="password"] {
+input[type="password"],
+input[type="email"] {
   padding: 10px;
   font-size: 15px;
   border: 1px solid #ddd;
   border-radius: 5px;
   width: 100%;
+  margin-bottom: 10px;
 }
 
-.primary-btn {
-  padding: 10px;
+/* ===============================
+   Header
+================================== */
+header {
+  text-align: center;
+  padding: 20px;
+  background-color: #4e9fd1;
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+
+/* ===============================
+   Buttons
+================================== */
+.primary-btn,
+.button-primary {
+  padding: 10px 15px;
   background-color: #4e9fd1;
   color: white;
   border: none;
@@ -57,13 +55,9 @@ input[type="password"] {
   margin-top: 10px;
 }
 
-.primary-btn:hover {
+.primary-btn:hover,
+.button-primary:hover {
   background-color: #3578a3;
-}
-
-.logout-wrapper {
-  text-align: center;
-  margin-top: 30px;
 }
 
 .logout-btn {
@@ -77,35 +71,6 @@ input[type="password"] {
 
 .logout-btn:hover {
   background-color: #e94e4e;
-}
-
-/* Credential Sticky Notes */
-.credential-board {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 15px;
-  margin-top: 20px;
-}
-
-.credential-note {
-  background-color: #fffeb3;
-  padding: 15px;
-  border-radius: 10px;
-  box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
-  transform: rotate(-1deg);
-  transition: transform 0.2s ease, box-shadow 0.3s ease;
-  position: relative;
-}
-
-.credential-note:hover {
-  transform: rotate(0deg) scale(1.02);
-  box-shadow: 4px 4px 15px rgba(0,0,0,0.15);
-}
-
-.note-actions {
-  margin-top: 10px;
-  display: flex;
-  justify-content: space-between;
 }
 
 button.toggle-password {
@@ -134,7 +99,107 @@ button.delete-credential:hover {
   background: #e94e4e;
 }
 
-/* Animations */
+/* ===============================
+   Forms
+================================== */
+form {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  margin-bottom: 20px;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 500;
+}
+
+.auth-link {
+  text-align: center;
+  margin-top: 15px;
+}
+
+.auth-link a {
+  color: #4e9fd1;
+  text-decoration: none;
+}
+
+.auth-link a:hover {
+  text-decoration: underline;
+}
+
+/* ===============================
+   Credential Form Wrapper
+================================== */
+.credential-item,
+.credential-form-wrapper {
+  background: #ffffff;
+  border-left: 4px solid #4e9fd1;
+  padding: 20px;
+  margin: 20px 0;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  transition: all 0.3s ease;
+}
+
+/* ===============================
+   Credential Sticky Notes
+================================== */
+.credential-board {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.credential-note {
+  background-color: #fffeb3;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
+  transform: rotate(-1deg);
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+  position: relative;
+}
+
+.credential-note:hover {
+  transform: rotate(0deg) scale(1.02);
+  box-shadow: 4px 4px 15px rgba(0,0,0,0.15);
+}
+
+.note-actions {
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+}
+
+/* ===============================
+   Credential Details
+================================== */
+.credential-header h3 {
+  margin: 0 0 5px;
+}
+
+.credential-header span {
+  font-size: 0.9em;
+  color: #666;
+}
+
+.credential-details p {
+  margin: 5px 0;
+}
+
+.password-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ===============================
+   Animations and States
+================================== */
 .fade-in {
   animation: fadeIn 0.4s ease-in-out;
 }
