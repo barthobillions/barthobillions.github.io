@@ -9,13 +9,13 @@
 <body>
   <div id="app">
     <header>
-      <h1 style="color: black; font-weight: bold; margin: 0;">NatPass</h1>
+      <h1>🔐 NatPass</h1>
     </header>
 
     <main>
-      <button id="add-credential-btn" class="primary-btn">Add New Credential</button>
+      <button id="add-credential-btn" class="primary-btn">➕ Add New Credential</button>
 
-      <div class="credential-item hidden" id="form-wrapper">
+      <div class="credential-form-wrapper hidden" id="form-wrapper">
         <div id="add-credential-form" class="form-group">
           <input type="text" id="cred-name" placeholder="Credential Name" required />
           <input type="text" id="cred-site" placeholder="Site Name" required />
@@ -24,27 +24,21 @@
             <input type="password" id="cred-password" placeholder="Password" required />
             <button type="button" id="toggle-password">Show</button>
           </div>
-          <div class="password-container">
-            <input type="password" id="cred-password-confirm" placeholder="Confirm Password" required />
-          </div>
-          <button id="save-credential" class="primary-btn">Save Credential</button>
+          <input type="password" id="cred-password-confirm" placeholder="Confirm Password" required />
+          <button id="save-credential" class="primary-btn">💾 Save Credential</button>
         </div>
       </div>
 
-      <div id="credentials-container"></div>
+      <div id="credentials-container" class="credential-board"></div>
 
-      <!-- Logout button at the bottom -->
-      <div style="margin-top: 30px; text-align: center;">
-        <button id="logout-btn" class="logout-btn">Logout</button>
+      <div class="logout-wrapper">
+        <button id="logout-btn" class="logout-btn">🚪 Logout</button>
       </div>
     </main>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
   <script type="module">
     import { supabase } from '/natpass/js/supabase.js';
-    import { getKeyFromPassword, encryptData, decryptData } from '/natpass/js/encryption.js';
-    import { getMasterPassword } from '/natpass/js/auth.js';
     import { saveCredential, loadCredentials, deleteCredential } from '/natpass/js/credentials.js';
 
     const addCredentialBtn = document.getElementById('add-credential-btn');
@@ -54,42 +48,30 @@
     const credentialsContainer = document.getElementById('credentials-container');
     const logoutBtn = document.getElementById('logout-btn');
 
-    // Toggle password visibility in the form
     togglePasswordBtn.addEventListener('click', () => {
-      const passwordInput = document.getElementById('cred-password');
-      if (passwordInput.type === 'password') {
-        passwordInput.type = 'text';
-        togglePasswordBtn.textContent = 'Hide';
-      } else {
-        passwordInput.type = 'password';
-        togglePasswordBtn.textContent = 'Show';
-      }
+      const input = document.getElementById('cred-password');
+      input.type = input.type === 'password' ? 'text' : 'password';
+      togglePasswordBtn.textContent = input.type === 'password' ? 'Show' : 'Hide';
     });
 
-    // Logout functionality
     logoutBtn.addEventListener('click', async () => {
-      try {
-        await supabase.auth.signOut();
-        window.location.href = "/natpass/index.html";
-      } catch (error) {
-        alert(error.message);
-      }
+      await supabase.auth.signOut();
+      window.location.href = "/natpass/index.html";
     });
 
-    // Toggle credential form
     addCredentialBtn.addEventListener('click', () => {
       formWrapper.classList.toggle('hidden');
+      formWrapper.classList.toggle('fade-in');
     });
 
-    // Save credential
     saveCredentialBtn.addEventListener('click', async () => {
       const name = document.getElementById('cred-name').value;
       const site = document.getElementById('cred-site').value;
       const username = document.getElementById('cred-username').value;
       const password = document.getElementById('cred-password').value;
-      const confirmPassword = document.getElementById('cred-password-confirm').value;
+      const confirm = document.getElementById('cred-password-confirm').value;
 
-      if (password !== confirmPassword) {
+      if (password !== confirm) {
         alert('Passwords do not match!');
         return;
       }
@@ -98,71 +80,62 @@
         await saveCredential(name, site, username, password);
         formWrapper.classList.add('hidden');
         loadAndRenderCredentials();
-      } catch (error) {
-        alert(error.message);
+      } catch (err) {
+        alert(err.message);
       }
     });
 
     async function loadAndRenderCredentials() {
       try {
         const credentials = await loadCredentials();
-        renderCredentials(credentials, credentialsContainer);
-      } catch (error) {
-        alert(error.message);
+        renderCredentials(credentials);
+      } catch (err) {
+        alert(err.message);
       }
     }
 
-    function renderCredentials(credentials, container) {
-      container.innerHTML = '';
-      if (!credentials || credentials.length === 0) {
-        container.innerHTML = '<p class="empty-state">No credentials saved yet.</p>';
+    function renderCredentials(creds) {
+      credentialsContainer.innerHTML = '';
+      if (!creds || creds.length === 0) {
+        credentialsContainer.innerHTML = '<p class="empty-state">No credentials saved yet.</p>';
         return;
       }
 
-      credentials.forEach(cred => {
-        const credElement = document.createElement('div');
-        credElement.className = 'credential-item';
-        credElement.innerHTML = `
-          <div class="credential-header">
-            <h3>${cred.name}</h3>
-            <span>${cred.site_name}</span>
-          </div>
-          <div class="credential-details">
-            <p>Username: ${cred.account_username}</p>
-            <div class="password-container">
-              <span class="password-display" id="password-${cred.id}">**********</span>
-              <button class="toggle-password" data-id="${cred.id}">Show</button>
-              <button class="delete-credential" data-id="${cred.id}">Delete</button>
-            </div>
+      creds.forEach(cred => {
+        const el = document.createElement('div');
+        el.className = 'credential-note';
+        el.innerHTML = `
+          <h3>${cred.name}</h3>
+          <p><strong>Site:</strong> ${cred.site_name}</p>
+          <p><strong>User:</strong> ${cred.account_username}</p>
+          <p><strong>Password:</strong> <span id="pwd-${cred.id}">**********</span></p>
+          <div class="note-actions">
+            <button class="toggle-password" data-id="${cred.id}">Show</button>
+            <button class="delete-credential" data-id="${cred.id}">Delete</button>
           </div>
         `;
-        container.appendChild(credElement);
+        credentialsContainer.appendChild(el);
       });
 
-      document.querySelectorAll('.toggle-password').forEach(button => {
-        button.addEventListener('click', (e) => {
+      document.querySelectorAll('.toggle-password').forEach(btn => {
+        btn.addEventListener('click', (e) => {
           const id = e.target.dataset.id;
-          const passwordSpan = document.getElementById(`password-${id}`);
-          const credential = credentials.find(c => c.id == id);
-          if (passwordSpan.textContent === '**********') {
-            passwordSpan.textContent = credential.password_decrypted || 'Error';
-            button.textContent = 'Hide';
+          const span = document.getElementById(`pwd-${id}`);
+          const cred = creds.find(c => c.id == id);
+          if (span.textContent === '**********') {
+            span.textContent = cred.password_decrypted || 'Error';
+            e.target.textContent = 'Hide';
           } else {
-            passwordSpan.textContent = '**********';
-            button.textContent = 'Show';
+            span.textContent = '**********';
+            e.target.textContent = 'Show';
           }
         });
       });
 
-      document.querySelectorAll('.delete-credential').forEach(button => {
-        button.addEventListener('click', async (e) => {
-          const id = e.target.dataset.id;
-          try {
-            await deleteCredential(id);
-            loadAndRenderCredentials();
-          } catch (error) {
-            alert(error.message);
-          }
+      document.querySelectorAll('.delete-credential').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+          await deleteCredential(e.target.dataset.id);
+          loadAndRenderCredentials();
         });
       });
     }

@@ -1,203 +1,155 @@
-/* Global styles */
+/* Global Styles */
 body {
-  font-family: Arial, sans-serif;
-  background-color: #f8f8f8; /* Light gray background */
-  color: #333; /* Dark gray text for good readability */
+  font-family: 'Segoe UI', sans-serif;
+  background: #fafafa;
+  color: #333;
   margin: 0;
   padding: 0;
 }
 
 #app,
 main {
-  max-width: 500px;
-  margin: 50px auto;
+  max-width: 700px;
+  margin: 30px auto;
   padding: 20px;
-  background-color: #ffffff; /* White background for content */
-  border-radius: 5px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
 }
 
+/* Header */
 header {
   text-align: center;
-  font-size: 24px;
   padding: 20px;
-  background-color: #f4f4f4; /* Soft blue for the header */
-  color: black;
-}
-
-h1,
-h2 {
-  text-align: center;
-  margin-bottom: 20px;
-}
-
-/* Form styles */
-form {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-label {
-  font-weight: bold;
-  color: #555; /* Lighter gray for labels */
-}
-
-input[type="email"],
-input[type="password"],
-input[type="text"] {
-  padding: 10px;
-  font-size: 16px;
-  border: 1px solid #ddd; /* Light gray border */
+  background-color: #4e9fd1;
+  color: white;
   border-radius: 5px;
-  background-color: #f1f1f1; /* Soft light gray background */
 }
 
-input:focus {
-  border-color: #4e9fd1; /* Blue border on focus */
-  outline: none;
+header h1 {
+  margin: 0;
 }
 
-.button-primary,
+/* Form */
+.credential-form-wrapper {
+  background: #ffffff;
+  border-left: 4px solid #4e9fd1;
+  padding: 20px;
+  margin: 20px 0;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  transition: all 0.3s ease;
+}
+
+input[type="text"],
+input[type="password"] {
+  padding: 10px;
+  font-size: 15px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  width: 100%;
+}
+
 .primary-btn {
   padding: 10px;
-  background-color: #4e9fd1; /* Soft blue for primary buttons */
-  color: #fff;
+  background-color: #4e9fd1;
+  color: white;
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  margin-top: 10px;
 }
 
-.button-primary:hover,
 .primary-btn:hover {
-  background-color: #3578a3; /* Slightly darker blue on hover */
+  background-color: #3578a3;
 }
 
-.auth-link {
+.logout-wrapper {
   text-align: center;
-  margin-top: 10px;
-}
-
-.auth-link a {
-  color: #4e9fd1; /* Soft blue for links */
-  text-decoration: none;
-}
-
-.auth-link a:hover {
-  text-decoration: underline;
-}
-
-/* Credential List */
-.credential-item {
-  border: 1px solid #ddd; /* Light gray border */
-  padding: 10px;
-  margin-bottom: 10px;
-  border-radius: 5px;
-  background-color: #f9f9f9; /* Slightly off-white background */
-}
-
-.credential-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.credential-details {
-  margin-top: 10px;
-}
-
-.password-container {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.password-display {
-  font-weight: bold;
-}
-
-button.toggle-password {
-  background-color: #6fcf97; /* Soft green for show password button */
-  color: white;
-  border: none;
-  padding: 5px 10px;
-  cursor: pointer;
-  border-radius: 3px;
-  transition: background-color 0.3s ease;
-}
-
-button.toggle-password:hover {
-  background-color: #55c085; /* Darker green on hover */
-}
-
-button.delete-credential {
-  background-color: #ff6b6b; /* Soft red for delete button */
-  color: white;
-  border: none;
-  padding: 5px 10px;
-  cursor: pointer;
-  border-radius: 3px;
-  transition: background-color 0.3s ease;
-}
-
-button.delete-credential:hover {
-  background-color: #e94e4e; /* Darker red on hover */
-}
-
-/* Add Credential Form */
-#add-credential-form {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: 20px;
-}
-
-.hidden {
-  display: none;
-}
-
-/* Empty state */
-.empty-state {
-  text-align: center;
-  color: #888; /* Lighter gray for empty states */
-}
-
-/* Modal */
-.modal {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.3); /* Semi-transparent background */
-  justify-content: center;
-  align-items: center;
-}
-
-.modal-content {
-  background-color: white;
-  padding: 20px;
-  border-radius: 5px;
-  max-width: 400px;
-  text-align: center;
-}
-
-.modal.open {
-  display: flex;
+  margin-top: 30px;
 }
 
 .logout-btn {
-  margin-top: 10px;
-  padding: 8px 12px;
-  background-color: #ff6b6b; /* Soft red for logout button */
-  color: white;
+  background-color: #ff6b6b;
+  padding: 10px 20px;
   border: none;
+  color: white;
   border-radius: 5px;
   cursor: pointer;
 }
 
 .logout-btn:hover {
-  background-color: #e94e4e; /* Darker red on hover */
+  background-color: #e94e4e;
+}
+
+/* Credential Sticky Notes */
+.credential-board {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.credential-note {
+  background-color: #fffeb3;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 2px 2px 8px rgba(0,0,0,0.1);
+  transform: rotate(-1deg);
+  transition: transform 0.2s ease, box-shadow 0.3s ease;
+  position: relative;
+}
+
+.credential-note:hover {
+  transform: rotate(0deg) scale(1.02);
+  box-shadow: 4px 4px 15px rgba(0,0,0,0.15);
+}
+
+.note-actions {
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+}
+
+button.toggle-password {
+  background: #6fcf97;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 3px;
+  color: white;
+  cursor: pointer;
+}
+
+button.toggle-password:hover {
+  background: #55c085;
+}
+
+button.delete-credential {
+  background: #ff6b6b;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 3px;
+  color: white;
+  cursor: pointer;
+}
+
+button.delete-credential:hover {
+  background: #e94e4e;
+}
+
+/* Animations */
+.fade-in {
+  animation: fadeIn 0.4s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.empty-state {
+  text-align: center;
+  color: #888;
+  margin-top: 40px;
+}
+
+.hidden {
+  display: none;
 }
