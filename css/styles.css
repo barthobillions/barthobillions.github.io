@@ -24,7 +24,7 @@ input[type="email"] {
   border: 1px solid #ddd;
   border-radius: 5px;
   width: 100%;
-  margin-bottom: 10px;
+  margin-bottom: 10px; /* Space between fields */
 }
 
 /* ===============================
@@ -108,6 +108,8 @@ form {
   border-radius: 8px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.05);
   margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;  /* Ensures all elements are stacked vertically */
 }
 
 label {
@@ -148,9 +150,10 @@ label {
    Credential Sticky Notes
 ================================== */
 .credential-board {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  display: flex;
+  flex-wrap: wrap;
   gap: 15px;
+  justify-content: center; /* Centers the sticky notes horizontally */
   margin-top: 20px;
 }
 
@@ -162,6 +165,9 @@ label {
   transform: rotate(-1deg);
   transition: transform 0.2s ease, box-shadow 0.3s ease;
   position: relative;
+  max-width: 220px;
+  min-width: 200px;
+  margin-bottom: 20px;
 }
 
 .credential-note:hover {
